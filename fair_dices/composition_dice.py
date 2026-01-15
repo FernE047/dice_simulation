@@ -1,4 +1,4 @@
-from dices.dice import Dice
+from fair_dices.dice import Dice
 
 
 class CompositeDice(Dice):
@@ -14,7 +14,9 @@ class CompositeDice(Dice):
         return roll_a * b_sides + roll_b
 
     def __str__(self) -> str:
-        return f"CompositeDice(d{self.dice_a.sides}, d{self.dice_b.sides}) = d{self.sides}"
+        return (
+            f"CompositeDice(d{self.dice_a.sides}, d{self.dice_b.sides}) = d{self.sides}"
+        )
 
     def explain(self) -> str:
         return f"CompositeDice({self.dice_a.explain()}, {self.dice_b.explain()})"

@@ -1,7 +1,7 @@
-from dices.dice import Dice
-from dices.mod_dice import ModDice
-from dices.composition_dice import CompositeDice
-from dices.contraption_dice import ContraptionDice
+from fair_dices.dice import Dice
+from fair_dices.mod_dice import ModDice
+from fair_dices.composition_dice import CompositeDice
+from nonlocal_fair_dices.contraption_dice import ContraptionDice
 
 # 1. dices we have available to use
 
@@ -123,7 +123,7 @@ dice_59 = ContraptionDice(dice_58)
 dice_94 = CompositeDice(dice_47, dice_2)
 
 all_dices: list[Dice] = [
-    Dice(0), # placeholder for index 0
+    Dice(0),  # placeholder for index 0
     dice_1,
     dice_2,
     dice_3,
