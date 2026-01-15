@@ -1,6 +1,6 @@
 from fair_dices.dice import Dice
 from fair_dices.mod_dice import ModDice
-from fair_dices.composition_dice import DuoDice
+from fair_dices.product_dice import DuoDice
 from nonlocal_fair_dices.composed_dice import OneExtraSideDice
 
 # 1. dices we have available to use
