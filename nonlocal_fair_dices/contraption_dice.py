@@ -4,6 +4,52 @@ from fair_dices.mod_dice import ModDice
 # this die is unfair for a single round, but evens out over multiple rounds
 
 
+class ComposedDice(Dice):
+    def __init__(self, decision_dice: Dice, dices: list[Dice]) -> None:
+        if not dices:
+            raise ValueError("At least one dice must be provided")
+        if len(dices) != decision_dice.sides:
+            raise ValueError(
+                "Number of dices must match the sides of the decision dice"
+            )
+        self.sides = sum(dice.sides for dice in dices)
+        self.decision_dice = decision_dice
+        self.dices = dices
+        self._rounds = 0
+
+    @property
+    def rounds(self) -> int:
+        return self._rounds
+
+    @rounds.setter
+    def rounds(self, value: int) -> None:
+        self._rounds = value
+        if self._rounds >= self.sides:
+            self._rounds = 0
+
+    def roll(self) -> int:
+        decision = self.decision_dice.roll()
+        selected_dice = self.dices[decision - 1]
+        dice_result = selected_dice.roll()
+        result = (
+            dice_result
+            + sum(dice.sides for dice in self.dices[: decision - 1])
+            - self._rounds
+        ) % self.sides
+        self.rounds += 1
+        if result == 0:
+            return self.sides
+        return result
+
+    def __str__(self) -> str:
+        dices_str = ", ".join(f"d{dice.sides}" for dice in self.dices)
+        return f"ComposedDice({self.decision_dice}, [{dices_str}]) = d{self.sides}"
+
+    def explain(self) -> str:
+        dices_explain = ", ".join(dice.explain() for dice in self.dices)
+        return f"ComposedDice({self.decision_dice.explain()}, [{dices_explain}])"
+
+
 class OneExtraSideDice(Dice):
     def __init__(self, dice: Dice) -> None:
         self.sides = dice.sides + 1
@@ -37,4 +83,6 @@ class OneExtraSideDice(Dice):
         return f"OneExtraSideDice(d2, d{self.dice.sides}) = d{self.sides}"
 
     def explain(self) -> str:
-        return f"OneExtraSideDice({self.decision_dice.explain()}, {self.dice.explain()})"
+        return (
+            f"OneExtraSideDice({self.decision_dice.explain()}, {self.dice.explain()})"
+        )
