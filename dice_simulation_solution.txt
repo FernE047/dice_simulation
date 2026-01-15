@@ -178,3 +178,15 @@ d79 : strat(d2,d78)
 d83 : strat(d2,d82)
 d89 : strat(d2,d88)
 d97 : strat(d2,d96)
+
+just to exemplify why d7 is fair, this is the results after 10_000_000, using the contraption dice:
+
+Side 1: 1429238
+Side 2: 1427813
+Side 3: 1428151
+Side 4: 1429614
+Side 5: 1427391
+Side 6: 1428942
+Side 7: 1428851
+
+pretty fair to me
