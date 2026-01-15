@@ -1,11 +1,12 @@
 from dices.dice import Dice
+from dices.mod_dice import ModDice
 
 #this die is unfair for a single round, but evens out over multiple rounds
 
 class ContraptionDice(Dice):
     def __init__(self, dice: Dice) -> None:
         self.sides = dice.sides + 1
-        self.decision_dice = Dice(2)
+        self.decision_dice = ModDice(Dice(4), 2)
         self.dice = dice
         self._rounds = 0
 
