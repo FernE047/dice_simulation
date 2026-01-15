@@ -3,6 +3,8 @@ from fair_dices.dice import Dice
 
 class MultiDice(Dice):
     def __init__(self, dices: list[Dice]) -> None:
+        if not dices:
+            raise ValueError("At least one dice must be provided")
         self.sides = 1
         for dice in dices:
             self.sides *= dice.sides
