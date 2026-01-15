@@ -4,7 +4,7 @@ from fair_dices.mod_dice import ModDice
 # this die is unfair for a single round, but evens out over multiple rounds
 
 
-class ContraptionDice(Dice):
+class OneExtraSideDice(Dice):
     def __init__(self, dice: Dice) -> None:
         self.sides = dice.sides + 1
         self.decision_dice = ModDice(Dice(4), 2)
@@ -34,7 +34,7 @@ class ContraptionDice(Dice):
         return result
 
     def __str__(self) -> str:
-        return f"ContraptionDice(d2, d{self.dice.sides}) = d{self.sides}"
+        return f"OneExtraSideDice(d2, d{self.dice.sides}) = d{self.sides}"
 
     def explain(self) -> str:
-        return f"ContraptionDice({self.decision_dice.explain()}, {self.dice.explain()})"
+        return f"OneExtraSideDice({self.decision_dice.explain()}, {self.dice.explain()})"

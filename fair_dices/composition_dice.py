@@ -1,7 +1,7 @@
 from fair_dices.dice import Dice
 
 
-class CompositeDice(Dice):
+class DuoDice(Dice):
     def __init__(self, dice_a: Dice, dice_b: Dice) -> None:
         self.sides = dice_a.sides * dice_b.sides
         self.dice_a = dice_a
@@ -15,8 +15,8 @@ class CompositeDice(Dice):
 
     def __str__(self) -> str:
         return (
-            f"CompositeDice(d{self.dice_a.sides}, d{self.dice_b.sides}) = d{self.sides}"
+            f"DuoDice(d{self.dice_a.sides}, d{self.dice_b.sides}) = d{self.sides}"
         )
 
     def explain(self) -> str:
-        return f"CompositeDice({self.dice_a.explain()}, {self.dice_b.explain()})"
+        return f"DuoDice({self.dice_a.explain()}, {self.dice_b.explain()})"
