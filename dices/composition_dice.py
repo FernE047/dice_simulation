@@ -15,3 +15,6 @@ class CompositeDice(Dice):
 
     def __str__(self) -> str:
         return f"CompositeDice(d{self.dice_a.sides}, d{self.dice_b.sides}) = d{self.sides}"
+
+    def explain(self) -> str:
+        return f"CompositeDice({self.dice_a.explain()}, {self.dice_b.explain()})"

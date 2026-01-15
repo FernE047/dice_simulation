@@ -33,3 +33,6 @@ class ContraptionDice(Dice):
     
     def __str__(self) -> str:
         return f"ContraptionDice(d2, d{self.dice.sides}) = d{self.sides}"
+    
+    def explain(self) -> str:
+        return f"ContraptionDice({self.decision_dice.explain()}, {self.dice.explain()})"

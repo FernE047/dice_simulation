@@ -10,3 +10,6 @@ class Dice(object):
 
     def __str__(self) -> str:
         return f"Dice({self.sides})"
+    
+    def explain(self) -> str:
+        return str(self)

@@ -12,3 +12,6 @@ class ModDice(Dice):
     
     def __str__(self) -> str:
         return f"ModDice(d{self.base_die.sides} % {self.modulo}) = d{self.sides}"
+    
+    def explain(self) -> str:
+        return f"ModDice({self.base_die.explain()}, {self.modulo})"
