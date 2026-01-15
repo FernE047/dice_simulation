@@ -7,3 +7,6 @@ class Dice(object):
 
     def roll(self) -> int:
         return random.randint(1, self.sides)
+
+    def __str__(self) -> str:
+        return f"Dice({self.sides})"

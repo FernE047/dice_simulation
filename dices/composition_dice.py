@@ -12,3 +12,6 @@ class CompositeDice(Dice):
         b_sides = self.dice_b.sides
         roll_b = self.dice_b.roll()
         return roll_a * b_sides + roll_b
+
+    def __str__(self) -> str:
+        return f"CompositeDice(d{self.dice_a.sides}, d{self.dice_b.sides}) = d{self.sides}"
