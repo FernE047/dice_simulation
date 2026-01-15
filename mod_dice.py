@@ -9,4 +9,4 @@ class ModDice(Dice):
         self.modulo = modulo
 
     def roll(self) -> int:
-        return self.base_die.roll() % self.modulo
+        return self.base_die.roll() % self.modulo + 1
