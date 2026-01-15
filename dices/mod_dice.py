@@ -1,6 +1,4 @@
-from dice import Dice
-
-# uses the modulo operator to create a die
+from dices.dice import Dice
 
 
 class ModDice(Dice):

@@ -1,5 +1,5 @@
-from dice import Dice
-from mod_dice import ModDice
+from dices.dice import Dice
+from dices.mod_dice import ModDice
 
 # 1. dices we have available to use
 
