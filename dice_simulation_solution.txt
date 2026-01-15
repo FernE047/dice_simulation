@@ -84,7 +84,7 @@ roll round: RR
 2. first roll d2 if result is 1: (result - RR) mod n
 3. if result is 2, roll the D
 4. (D + 2 - RR) mod n
-it's unfair, and the number set on 1 is super probable while the others aren't, but if you roll n times, then the probabilities flat out anf it becomes fair.
+it's unfair, and the number set on 1 is super probable while the others aren't, but if you roll n times, then the probabilities flat out and it becomes fair.
 
 so, when we use this strat, I put strat(d2,d(n-1)) in the description
 
