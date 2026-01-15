@@ -3,6 +3,7 @@ from dices.dice import Dice
 
 class ModDice(Dice):
     def __init__(self, base_die: Dice, modulo: int = 0) -> None:
+        self.sides = modulo
         self.base_die = base_die
         self.modulo = modulo
 

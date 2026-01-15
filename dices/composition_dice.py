@@ -3,6 +3,7 @@ from dices.dice import Dice
 
 class CompositeDice(Dice):
     def __init__(self, dice_a: Dice, dice_b: Dice) -> None:
+        self.sides = dice_a.sides * dice_b.sides
         self.dice_a = dice_a
         self.dice_b = dice_b
 
