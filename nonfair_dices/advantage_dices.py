@@ -12,10 +12,6 @@ class AdvantageDices(Dice):
     def __str__(self) -> str:
         dices_str = ", ".join(str(dice) for dice in self.dices)
         return f"AdvantageDices([{dices_str}])"
-    
-    def explain(self) -> str:
-        dices_explain = ", ".join(dice.explain() for dice in self.dices)
-        return f"AdvantageDices([{dices_explain}])"
 
 class DisadvantageDices(Dice):
     def __init__(self, dices: list[Dice]) -> None:
@@ -28,7 +24,3 @@ class DisadvantageDices(Dice):
     def __str__(self) -> str:
         dices_str = ", ".join(str(dice) for dice in self.dices)
         return f"DisadvantageDices([{dices_str}])"
-    
-    def explain(self) -> str:
-        dices_explain = ", ".join(dice.explain() for dice in self.dices)
-        return f"DisadvantageDices([{dices_explain}])"

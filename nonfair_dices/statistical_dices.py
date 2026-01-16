@@ -14,10 +14,6 @@ class MeanDice(Dice):
         dice_str = ", ".join(str(die) for die in self.dice_list)
         return f"MeanDice([{dice_str}])"
 
-    def explain(self) -> str:
-        dice_explain = ", ".join(die.explain() for die in self.dice_list)
-        return f"MeanDice([{dice_explain}])"
-
 
 class MedianDice(Dice):
     def __init__(self, dice_list: list[Dice]) -> None:
@@ -37,10 +33,6 @@ class MedianDice(Dice):
         dice_str = ", ".join(str(die) for die in self.dice_list)
         return f"MedianDice([{dice_str}])"
 
-    def explain(self) -> str:
-        dice_explain = ", ".join(die.explain() for die in self.dice_list)
-        return f"MedianDice([{dice_explain}])"
-
 
 class ModeDice(Dice):
     def __init__(self, dice_list: list[Dice]) -> None:
@@ -59,9 +51,6 @@ class ModeDice(Dice):
         dice_str = ", ".join(str(die) for die in self.dice_list)
         return f"ModeDice([{dice_str}])"
 
-    def explain(self) -> str:
-        dice_explain = ", ".join(die.explain() for die in self.dice_list)
-        return f"ModeDice([{dice_explain}])"
 
 class VarianceDice(Dice):
     def __init__(self, dice_list: list[Dice]) -> None:
@@ -78,9 +67,6 @@ class VarianceDice(Dice):
         dice_str = ", ".join(str(die) for die in self.dice_list)
         return f"VarianceDice([{dice_str}])"
 
-    def explain(self) -> str:
-        dice_explain = ", ".join(die.explain() for die in self.dice_list)
-        return f"VarianceDice([{dice_explain}])"
 
 class StdDevDice(Dice):
     def __init__(self, dice_list: list[Dice]) -> None:
@@ -90,6 +76,7 @@ class StdDevDice(Dice):
 
     def roll(self) -> int:
         from math import sqrt
+
         variance = self.variance_dice.roll()
         stddev = sqrt(variance)
         return int(stddev)
@@ -98,9 +85,6 @@ class StdDevDice(Dice):
         dice_str = ", ".join(str(die) for die in self.dice_list)
         return f"StdDevDice([{dice_str}])"
 
-    def explain(self) -> str:
-        dice_explain = ", ".join(die.explain() for die in self.dice_list)
-        return f"StdDevDice([{dice_explain}])"
 
 class RangeDice(Dice):
     def __init__(self, dice_list: list[Dice]) -> None:
@@ -115,9 +99,6 @@ class RangeDice(Dice):
         dice_str = ", ".join(str(die) for die in self.dice_list)
         return f"RangeDice([{dice_str}])"
 
-    def explain(self) -> str:
-        dice_explain = ", ".join(die.explain() for die in self.dice_list)
-        return f"RangeDice([{dice_explain}])"
 
 class WeightedMeanDice(Dice):
     def __init__(self, dice_list: list[Dice], dice_weights: list[Dice]) -> None:
@@ -125,19 +106,19 @@ class WeightedMeanDice(Dice):
             raise ValueError("dice_list and dice_weights must have the same length")
         self.dice_list = dice_list
         self.dice_weights = dice_weights
-        self.sides = max(die.sides * weight.sides for die, weight in zip(dice_list, dice_weights))
+        self.sides = max(
+            die.sides * weight.sides for die, weight in zip(dice_list, dice_weights)
+        )
 
     def roll(self) -> int:
-        weighted_rolls = [die.roll() * weight.roll() for die, weight in zip(self.dice_list, self.dice_weights)]
+        weighted_rolls = [
+            die.roll() * weight.roll()
+            for die, weight in zip(self.dice_list, self.dice_weights)
+        ]
         total_weight = sum(weight.roll() for weight in self.dice_weights)
         return sum(weighted_rolls) // total_weight if total_weight != 0 else 0
-    
+
     def __str__(self) -> str:
         dice_str = ", ".join(str(die) for die in self.dice_list)
         weights_str = ", ".join(str(weight) for weight in self.dice_weights)
         return f"WeightedMeanDice([{dice_str}], [{weights_str}])"
-    
-    def explain(self) -> str:
-        dice_explain = ", ".join(die.explain() for die in self.dice_list)
-        weights_explain = ", ".join(weight.explain() for weight in self.dice_weights)
-        return f"WeightedMeanDice([{dice_explain}], [{weights_explain}])"

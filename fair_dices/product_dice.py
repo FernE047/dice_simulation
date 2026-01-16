@@ -20,11 +20,7 @@ class MultiDice(Dice):
         return result + 1
 
     def __str__(self) -> str:
-        dices_str = ", ".join(f"d{dice.sides}" for dice in self.dices)
-        return f"MultiDice({dices_str}) = d{self.sides}"
-
-    def explain(self) -> str:
-        dices_explain = ", ".join(dice.explain() for dice in self.dices)
+        dices_explain = ", ".join(str(dice) for dice in self.dices)
         return f"MultiDice({dices_explain})"
 
 
@@ -41,7 +37,4 @@ class DuoDice(Dice):  # it's a multi dice with two dices. here for legacy reason
         return roll_a * b_sides + roll_b
 
     def __str__(self) -> str:
-        return f"DuoDice(d{self.dice_a.sides}, d{self.dice_b.sides}) = d{self.sides}"
-
-    def explain(self) -> str:
-        return f"DuoDice({self.dice_a.explain()}, {self.dice_b.explain()})"
+        return f"DuoDice({self.dice_a}, {self.dice_b})"

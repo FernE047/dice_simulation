@@ -13,10 +13,6 @@ class SumDice(Dice):
         dice_str = ", ".join(str(die) for die in self.dice_list)
         return f"SumDice([{dice_str}])"
     
-    def explain(self) -> str:
-        dice_explain = ", ".join(die.explain() for die in self.dice_list)
-        return f"SumDice([{dice_explain}])"
-    
 class MultiplicationDice(Dice):
     def __init__(self, dice_list: list[Dice]) -> None:
         self.dice_list = dice_list
@@ -33,10 +29,6 @@ class MultiplicationDice(Dice):
     def __str__(self) -> str:
         dice_str = ", ".join(str(die) for die in self.dice_list)
         return f"MultiplicationDice([{dice_str}])"
-    
-    def explain(self) -> str:
-        dice_explain = ", ".join(die.explain() for die in self.dice_list)
-        return f"MultiplicationDice([{dice_explain}])"
 
 class ExponentiationDice(Dice):
     """A dice representing the exponentiation of one dice by another. limited to 2 dice for simplicity."""
@@ -50,9 +42,6 @@ class ExponentiationDice(Dice):
     
     def __str__(self) -> str:
         return f"ExponentiationDice({self.base_die}, {self.exponent_die})"
-    
-    def explain(self) -> str:
-        return f"ExponentiationDice({self.base_die.explain()}, {self.exponent_die.explain()})"
 
 class ModuloDice(Dice):
     def __init__(self, dividend_die: Dice, divisor_die: Dice) -> None:
@@ -67,9 +56,6 @@ class ModuloDice(Dice):
     
     def __str__(self) -> str:
         return f"ModuloDice({self.dividend_die}, {self.divisor_die})"
-    
-    def explain(self) -> str:
-        return f"ModuloDice({self.dividend_die.explain()}, {self.divisor_die.explain()})"
 
 class FloorDivisionDice(Dice):
     def __init__(self, dividend_die: Dice, divisor_die: Dice) -> None:
@@ -85,9 +71,6 @@ class FloorDivisionDice(Dice):
     def __str__(self) -> str:
         return f"FloorDivisionDice({self.dividend_die}, {self.divisor_die})"
     
-    def explain(self) -> str:
-        return f"FloorDivisionDice({self.dividend_die.explain()}, {self.divisor_die.explain()})"
-    
 class GCDDice(Dice):
     def __init__(self, dice_list: list[Dice]) -> None:
         self.dice_list = dice_list
@@ -101,10 +84,6 @@ class GCDDice(Dice):
     def __str__(self) -> str:
         dice_str = ", ".join(str(die) for die in self.dice_list)
         return f"GCDDice([{dice_str}])"
-    
-    def explain(self) -> str:
-        dice_explain = ", ".join(die.explain() for die in self.dice_list)
-        return f"GCDDice([{dice_explain}])"
 
 class LCMDice(Dice): 
     def __init__(self, dice_list: list[Dice]) -> None:
@@ -123,7 +102,3 @@ class LCMDice(Dice):
     def __str__(self) -> str:
         dice_str = ", ".join(str(die) for die in self.dice_list)
         return f"LCMDice([{dice_str}])"
-    
-    def explain(self) -> str:
-        dice_explain = ", ".join(die.explain() for die in self.dice_list)
-        return f"LCMDice([{dice_explain}])"

@@ -42,12 +42,8 @@ class ComposedDice(Dice):
         return result
 
     def __str__(self) -> str:
-        dices_str = ", ".join(f"d{dice.sides}" for dice in self.dices)
-        return f"ComposedDice({self.decision_dice}, [{dices_str}]) = d{self.sides}"
-
-    def explain(self) -> str:
-        dices_explain = ", ".join(dice.explain() for dice in self.dices)
-        return f"ComposedDice({self.decision_dice.explain()}, [{dices_explain}])"
+        dices_explain = ", ".join(str(dice) for dice in self.dices)
+        return f"ComposedDice({self.decision_dice}, [{dices_explain}])"
 
 
 class OneExtraSideDice(Dice):
@@ -80,9 +76,4 @@ class OneExtraSideDice(Dice):
         return result
 
     def __str__(self) -> str:
-        return f"OneExtraSideDice(d2, d{self.dice.sides}) = d{self.sides}"
-
-    def explain(self) -> str:
-        return (
-            f"OneExtraSideDice({self.decision_dice.explain()}, {self.dice.explain()})"
-        )
+        return f"OneExtraSideDice({self.decision_dice}, {self.dice})"
