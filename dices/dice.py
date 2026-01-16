@@ -41,6 +41,15 @@ class BaseDice(ABC):
     def get_outcomes(self) -> OutcomesData:
         pass
 
+    def get_probabilities(self) -> dict[int, float]:
+        outcomes = self.get_outcomes()
+        counts: dict[int, int] = {}
+        for _, result in outcomes:
+            counts[result] = counts.get(result, 0) + 1
+        total_outcomes = len(outcomes)
+        return {side: count / total_outcomes for side, count in counts.items()}
+
+
 class Dice(BaseDice):
     """Dice with arbitrary side values."""
 
