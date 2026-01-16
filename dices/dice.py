@@ -4,7 +4,7 @@ from typing import Union, cast
 
 OutcomesData = list[
     tuple[list[int], int]
-]  # é uma lista de tuplas, cada tupla tem uma lista de inteiros (os dices rolls que levaram até o resultado) e um inteiro (o resultado final)
+]  # A list of tuples, where each tuple contains a list of integers (the dice rolls) and an integer (the final result).
 OutcomesMatriz = list[Union[int, "OutcomesMatriz"]]
 
 
