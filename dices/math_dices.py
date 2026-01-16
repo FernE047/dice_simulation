@@ -1,5 +1,5 @@
 from typing import cast
-from fair_dices.dice import Dice
+from dices.dice import Dice
 
 
 class SumDice(Dice):
@@ -168,7 +168,7 @@ class PrimeDice(Dice):
         self.base_die = base_die
 
     def roll(self) -> int:
-        from sympy import prime #type: ignore
+        from sympy import prime  # type: ignore
 
         n = self.base_die.roll()
         return cast(int, prime(n))

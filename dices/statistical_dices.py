@@ -1,4 +1,4 @@
-from fair_dices.dice import Dice
+from dices.dice import Dice
 
 
 class MeanDice(Dice):

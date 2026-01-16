@@ -1,5 +1,6 @@
-from fair_dices.dice import Dice
-from fair_dices.mod_dice import ModDice
+from dices.dice import Dice
+from dices.mod_dice import ModDice
+
 
 class RoutingDice(Dice):
     def __init__(self, decision_dice: Dice, dices: list[Dice]) -> None:
