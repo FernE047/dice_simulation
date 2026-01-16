@@ -1,5 +1,6 @@
-from typing import cast
 from dices.dice import Dice
+
+"""This module contains dice that apply various mathematical operations to the results of other dice."""
 
 
 class SumDice(Dice):
@@ -161,17 +162,3 @@ class ConcatenationDice(Dice):
     def __str__(self) -> str:
         dice_str = ", ".join(str(die) for die in self.dice_list)
         return f"ConcatenationDice([{dice_str}])"
-
-
-class PrimeDice(Dice):
-    def __init__(self, base_die: Dice) -> None:
-        self.base_die = base_die
-
-    def roll(self) -> int:
-        from sympy import prime  # type: ignore
-
-        n = self.base_die.roll()
-        return cast(int, prime(n))
-
-    def __str__(self) -> str:
-        return f"PrimeDice({self.base_die})"
