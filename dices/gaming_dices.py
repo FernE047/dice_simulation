@@ -62,3 +62,6 @@ class ComboDice(BaseDice):
             if self._stop(roll):
                 break
         return total
+    
+    def __str__(self) -> str:
+        return f"ComboDice({self.dice}, {self.target}, {self.non_target})"
