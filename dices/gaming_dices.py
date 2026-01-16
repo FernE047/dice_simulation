@@ -36,6 +36,7 @@ class ComboDice(DiceOfDices):
         dice: BaseDice,
         target: list[int] | None = None,
         non_target: list[int] | None = None,
+        combo_limit: int = 5
     ) -> None:
         if target is None and non_target is None:
             raise ValueError("Either target or non_target must be provided.")
@@ -43,7 +44,9 @@ class ComboDice(DiceOfDices):
             target = []
         if non_target is None:
             non_target = []
-        super().__init__([dice] * 100) # Arbitrary large number to allow multiple rolls
+        super().__init__(
+            [dice] * combo_limit
+        ) # Arbitrary limit to avoid infinite combos
         self.target = target
         self.non_target = non_target
         self.max_side = dice.max_side

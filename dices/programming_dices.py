@@ -38,21 +38,26 @@ class ForLoopDice(DiceOfDices):
 
 class WhileLoopDice(DiceOfDices):
     def __init__(
-        self, base_die: BaseDice, condition_die: BaseDice, target: int
+        self,
+        base_die: BaseDice,
+        condition_die: BaseDice,
+        target: int,
+        loop_limit: int = 5,
     ) -> None:
-        super().__init__([condition_die] * 100 + [base_die] * 100) # Arbitrary large number to allow multiple rolls
+        super().__init__([condition_die] * loop_limit + [base_die] * loop_limit)
         self.target = target
-        self.max_side = 100 * base_die.max_side
+        self.loop_limit = loop_limit
+        self.max_side = loop_limit * base_die.max_side
 
     def apply_logic(self, rolls: list[int]) -> int:
         total = 0
-        condition_rolls = rolls[:100]
-        base_rolls = rolls[100:]
+        condition_rolls = rolls[: self.loop_limit]
+        base_rolls = rolls[self.loop_limit :]
         for cond_roll, base_roll in zip(condition_rolls, base_rolls):
-            if cond_roll != self.target:
+            if cond_roll == self.target:
                 break
             total += base_roll
         return total
 
     def __str__(self) -> str:
-        return f"WhileLoopDice({self.dices[100]}, {self.dices[0]}, {self.target})"
+        return f"WhileLoopDice({self.dices[self.loop_limit]}, {self.dices[0]}, {self.target})"
