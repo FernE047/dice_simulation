@@ -1,5 +1,50 @@
-from dices.dice import BaseDice, DiceOfDices
+from dices.dice import BaseDice, BiDice, DiceOfDices, FunctionDice
 
+class AndDice(DiceOfDices):
+    def __init__(self, dice_list: list[BaseDice]) -> None:
+        super().__init__(dice_list)
+        self.max_side = 2  # True or False
+
+    def apply_logic(self, rolls: list[int]) -> int:
+        return int(all(rolls))
+
+    def __str__(self) -> str:
+        dice_str = ", ".join(str(die) for die in self.dices)
+        return f"AndDice([{dice_str}])"
+
+class OrDice(DiceOfDices):
+    def __init__(self, dice_list: list[BaseDice]) -> None:
+        super().__init__(dice_list)
+        self.max_side = 2  # True or False
+
+    def apply_logic(self, rolls: list[int]) -> int:
+        return int(any(rolls))
+
+    def __str__(self) -> str:
+        dice_str = ", ".join(str(die) for die in self.dices)
+        return f"OrDice([{dice_str}])"
+
+class NotDice(FunctionDice):
+    def __init__(self, dice: BaseDice) -> None:
+        super().__init__(dice)
+        self.max_side = 2  # True or False
+
+    def apply_logic(self, roll: int) -> int:
+        return 1 if roll == 0 else 0
+
+    def __str__(self) -> str:
+        return f"NotDice({self.die})"
+
+class XorDice(BiDice):
+    def __init__(self, dice_a: BaseDice, dice_b: BaseDice) -> None:
+        super().__init__(dice_a, dice_b)
+        self.max_side = 2  # True or False
+
+    def apply_logic(self, roll_a: int, roll_b: int) -> int:
+        return int((roll_a != 0) ^ (roll_b != 0))
+
+    def __str__(self) -> str:
+        return f"XorDice({self.dice_a}, {self.dice_b})"
 
 class RoutingDice(DiceOfDices):
     def __init__(self, decision_dice: BaseDice, dices: list[BaseDice]) -> None:
@@ -10,7 +55,7 @@ class RoutingDice(DiceOfDices):
                 "Number of dices must match the sides of the decision dice"
             )
         super().__init__([decision_dice] + dices)
-        self.max_side = sum(dice.max_side for dice in dices[1:])
+        self.max_side = sum(dice.max_side for dice in dices)
 
     def apply_logic(self, rolls: list[int]) -> int:
         decision = rolls[0]
