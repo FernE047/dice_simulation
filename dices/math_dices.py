@@ -130,10 +130,11 @@ class CatetusDice(BiDice):
 
         hipotenuse = roll_a
         known_side = roll_b
-        return int(sqrt(hipotenuse**2 - known_side**2))
+        return int(sqrt(abs(hipotenuse**2 - known_side**2)))
 
     def __str__(self) -> str:
         return f"CatetusDice({self.dice_a}, {self.dice_b})"
+
 
 class ConcatenationDice(DiceOfDices):
     def __init__(self, dice_list: list[BaseDice]) -> None:
