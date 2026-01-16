@@ -1,109 +1,100 @@
-from dices.dice import BaseDice
+from dices.dice import BaseDice, BiDice, DiceOfDices
 
 """This module contains dice that apply various mathematical operations to the results of other dice."""
 
 
-class SumDice(BaseDice):
+class SumDice(DiceOfDices):
     def __init__(self, dice_list: list[BaseDice]) -> None:
-        self.dice_list = dice_list
-        self.max_side = sum(die.max_side for die in dice_list)
+        super().__init__(dice_list)
+        self.max_side = sum(die.max_side for die in self.dices)
 
-    def roll(self) -> int:
-        return sum(die.roll() for die in self.dice_list)
+    def apply_logic(self, rolls: list[int]) -> int:
+        return sum(rolls)
 
     def __str__(self) -> str:
-        dice_str = ", ".join(str(die) for die in self.dice_list)
+        dice_str = ", ".join(str(die) for die in self.dices)
         return f"SumDice([{dice_str}])"
 
 
-class MultiplicationDice(BaseDice):
+class MultiplicationDice(DiceOfDices):
     def __init__(self, dice_list: list[BaseDice]) -> None:
-        self.dice_list = dice_list
+        super().__init__(dice_list)
         self.max_side = 1
-        for die in dice_list:
+        for die in self.dices:
             self.max_side *= die.max_side
 
-    def roll(self) -> int:
+    def apply_logic(self, rolls: list[int]) -> int:
         result = 1
-        for die in self.dice_list:
-            result *= die.roll()
+        for roll in rolls:
+            result *= roll
         return result
 
     def __str__(self) -> str:
-        dice_str = ", ".join(str(die) for die in self.dice_list)
+        dice_str = ", ".join(str(die) for die in self.dices)
         return f"MultiplicationDice([{dice_str}])"
 
 
-class ExponentiationDice(BaseDice):
+class ExponentiationDice(BiDice):
     """A dice representing the exponentiation of one dice by another. limited to 2 dice for simplicity."""
 
     def __init__(self, base_die: BaseDice, exponent_die: BaseDice) -> None:
-        self.base_die = base_die
-        self.exponent_die = exponent_die
+        super().__init__(base_die, exponent_die)
         self.max_side = base_die.max_side**exponent_die.max_side
 
-    def roll(self) -> int:
-        return self.base_die.roll() ** self.exponent_die.roll()
+    def apply_logic(self, roll_a: int, roll_b: int) -> int:
+        return roll_a**roll_b
 
     def __str__(self) -> str:
-        return f"ExponentiationDice({self.base_die}, {self.exponent_die})"
+        return f"ExponentiationDice({self.dice_a}, {self.dice_b})"
 
 
-class ModuloDice(BaseDice):
+class ModuloDice(BiDice):
     def __init__(self, dividend_die: BaseDice, divisor_die: BaseDice) -> None:
-        self.dividend_die = dividend_die
-        self.divisor_die = divisor_die
+        super().__init__(dividend_die, divisor_die)
         self.max_side = dividend_die.max_side
 
-    def roll(self) -> int:
-        dividend = self.dividend_die.roll()
-        divisor = self.divisor_die.roll()
-        return dividend % divisor
+    def apply_logic(self, roll_a: int, roll_b: int) -> int:
+        return roll_a % roll_b
 
     def __str__(self) -> str:
-        return f"ModuloDice({self.dividend_die}, {self.divisor_die})"
+        return f"ModuloDice({self.dice_a}, {self.dice_b})"
 
 
-class FloorDivisionDice(BaseDice):
+class FloorDivisionDice(BiDice):
     def __init__(self, dividend_die: BaseDice, divisor_die: BaseDice) -> None:
-        self.dividend_die = dividend_die
-        self.divisor_die = divisor_die
+        super().__init__(dividend_die, divisor_die)
         self.max_side = dividend_die.max_side
 
-    def roll(self) -> int:
-        dividend = self.dividend_die.roll()
-        divisor = self.divisor_die.roll()
-        return dividend // divisor
+    def apply_logic(self, roll_a: int, roll_b: int) -> int:
+        return roll_a // roll_b
 
     def __str__(self) -> str:
-        return f"FloorDivisionDice({self.dividend_die}, {self.divisor_die})"
+        return f"FloorDivisionDice({self.dice_a}, {self.dice_b})"
 
 
-class GCDDice(BaseDice):
+class GCDDice(DiceOfDices):
     def __init__(self, dice_list: list[BaseDice]) -> None:
-        self.dice_list = dice_list
-        self.max_side = min(die.max_side for die in dice_list)
+        super().__init__(dice_list)
+        self.max_side = min(die.max_side for die in self.dices)
 
-    def roll(self) -> int:
+    def apply_logic(self, rolls: list[int]) -> int:
         from math import gcd
 
-        rolls = [die.roll() for die in self.dice_list]
         return gcd(*rolls)
 
     def __str__(self) -> str:
-        dice_str = ", ".join(str(die) for die in self.dice_list)
+        dice_str = ", ".join(str(die) for die in self.dices)
         return f"GCDDice([{dice_str}])"
 
 
-class LCMDice(BaseDice):
+class LCMDice(DiceOfDices):
     def __init__(self, dice_list: list[BaseDice]) -> None:
-        self.dice_list = dice_list
-        self.max_side = max(die.max_side for die in dice_list)
+        super().__init__(dice_list)
+        self.max_side = max(die.max_side for die in self.dices)
 
-    def roll(self) -> int:
+    def apply_logic(self, rolls: list[int]) -> int:
         from math import gcd
 
-        rolls = [die.roll() for die in self.dice_list]
         total = 1
         for r in rolls:
             total *= r
@@ -111,54 +102,49 @@ class LCMDice(BaseDice):
         return abs(total) // gcd_rolls
 
     def __str__(self) -> str:
-        dice_str = ", ".join(str(die) for die in self.dice_list)
+        dice_str = ", ".join(str(die) for die in self.dices)
         return f"LCMDice([{dice_str}])"
 
 
-class HipotenuseDice(BaseDice):
+class HipotenuseDice(BiDice):
     def __init__(self, side_a_die: BaseDice, side_b_die: BaseDice) -> None:
-        self.side_a_die = side_a_die
-        self.side_b_die = side_b_die
+        super().__init__(side_a_die, side_b_die)
         self.max_side = int((side_a_die.max_side**2 + side_b_die.max_side**2) ** 0.5)
 
-    def roll(self) -> int:
+    def apply_logic(self, roll_a: int, roll_b: int) -> int:
         from math import sqrt
 
-        side_a = self.side_a_die.roll()
-        side_b = self.side_b_die.roll()
-        return int(sqrt(side_a**2 + side_b**2))
+        return int(sqrt(roll_a**2 + roll_b**2))
 
     def __str__(self) -> str:
-        return f"HipotenuseDice({self.side_a_die}, {self.side_b_die})"
+        return f"HipotenuseDice({self.dice_a}, {self.dice_b})"
 
 
-class CatetusDice(BaseDice):
+class CatetusDice(BiDice):
     def __init__(self, hipotenuse_die: BaseDice, known_side_die: BaseDice) -> None:
-        self.hipotenuse_die = hipotenuse_die
-        self.known_side_die = known_side_die
+        super().__init__(hipotenuse_die, known_side_die)
         self.max_side = hipotenuse_die.max_side
 
-    def roll(self) -> int:
+    def apply_logic(self, roll_a: int, roll_b: int) -> int:
         from math import sqrt
 
-        hipotenuse = self.hipotenuse_die.roll()
-        known_side = self.known_side_die.roll()
+        hipotenuse = roll_a
+        known_side = roll_b
         return int(sqrt(hipotenuse**2 - known_side**2))
 
     def __str__(self) -> str:
-        return f"CatetusDice({self.hipotenuse_die}, {self.known_side_die})"
+        return f"CatetusDice({self.dice_a}, {self.dice_b})"
 
-
-class ConcatenationDice(BaseDice):
+class ConcatenationDice(DiceOfDices):
     def __init__(self, dice_list: list[BaseDice]) -> None:
-        self.dice_list = dice_list
+        super().__init__(dice_list)
         self.max_side = int("".join(str(die.max_side) for die in dice_list))
 
-    def roll(self) -> int:
-        rolls = [str(die.roll()) for die in self.dice_list]
-        rolls.sort(reverse=True)
-        return int("".join(rolls))
+    def apply_logic(self, rolls: list[int]) -> int:
+        rolls_str = [str(r) for r in rolls]
+        rolls_str.sort(reverse=True)
+        return int("".join(rolls_str))
 
     def __str__(self) -> str:
-        dice_str = ", ".join(str(die) for die in self.dice_list)
+        dice_str = ", ".join(str(die) for die in self.dices)
         return f"ConcatenationDice([{dice_str}])"

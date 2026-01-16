@@ -1,23 +1,22 @@
-from dices.dice import BaseDice, SequentialDice
+from dices.dice import BaseDice, BiDice, DiceOfDices, SequentialDice
 from dices.math_operations_dices import ModDice
 
 
-class MultiDice(BaseDice):
+class MultiDice(DiceOfDices):
     def __init__(self, dices: list[BaseDice]) -> None:
         if not dices:
             raise ValueError("At least one dice must be provided")
         self.max_side = 1
         for dice in dices:
             self.max_side *= dice.max_side
-        self.dices = dices
+        super().__init__(dices)
 
-    def roll(self) -> int:
+    def apply_logic(self, rolls: list[int]) -> int:
         result = 0
         multiplier = 1
-        for dice in self.dices:
-            roll = dice.roll() - 1
-            result += roll * multiplier
-            multiplier *= int(dice.max_side)
+        for index, roll in enumerate(rolls):
+            result += (roll - 1) * multiplier
+            multiplier *= int(self.dices[index].max_side)
         return result + 1
 
     def __str__(self) -> str:
@@ -25,23 +24,20 @@ class MultiDice(BaseDice):
         return f"MultiDice({dices_explain})"
 
 
-class DuoDice(BaseDice):  # it's a multi dice with two dices. here for legacy reasons
+class DuoDice(BiDice):  # it's a multi dice with two dices. here for legacy reasons
     def __init__(self, dice_a: BaseDice, dice_b: BaseDice) -> None:
         self.max_side = dice_a.max_side * dice_b.max_side
-        self.dice_a = dice_a
-        self.dice_b = dice_b
+        super().__init__(dice_a, dice_b)
 
-    def roll(self) -> int:
-        roll_a = self.dice_a.roll() - 1
+    def apply_logic(self, roll_a: int, roll_b: int) -> int:
         b_sides = int(self.dice_b.max_side)
-        roll_b = self.dice_b.roll()
-        return roll_a * b_sides + roll_b
+        return (roll_a - 1) * b_sides + roll_b
 
     def __str__(self) -> str:
         return f"DuoDice({self.dice_a}, {self.dice_b})"
 
 
-class ComposedDice(BaseDice):
+class ComposedDice(DiceOfDices):
     def __init__(self, decision_dice: BaseDice, dices: list[BaseDice]) -> None:
         if not dices:
             raise ValueError("At least one dice must be provided")
@@ -50,8 +46,7 @@ class ComposedDice(BaseDice):
                 "Number of dices must match the sides of the decision dice"
             )
         self.max_side = sum(dice.max_side for dice in dices)
-        self.decision_dice = decision_dice
-        self.dices = dices
+        super().__init__([decision_dice] + dices)
         self._rounds = 0
 
     @property
@@ -64,13 +59,12 @@ class ComposedDice(BaseDice):
         if self._rounds >= self.max_side:
             self._rounds = 0
 
-    def roll(self) -> int:
-        decision = self.decision_dice.roll()
-        selected_dice = self.dices[decision - 1]
-        dice_result = selected_dice.roll()
+    def apply_logic(self, rolls: list[int]) -> int:
+        decision = rolls[0]
+        dice_result = rolls[decision + 1]
         result = (
             dice_result
-            + sum(int(dice.max_side) for dice in self.dices[: decision - 1])
+            + sum(int(dice.max_side) for dice in self.dices[1 : decision + 1])
             - self._rounds
         ) % int(self.max_side)
         self.rounds += 1
@@ -79,15 +73,14 @@ class ComposedDice(BaseDice):
         return result
 
     def __str__(self) -> str:
-        dices_explain = ", ".join(str(dice) for dice in self.dices)
-        return f"ComposedDice({self.decision_dice}, [{dices_explain}])"
+        dices_explain = ", ".join(str(dice) for dice in self.dices[1:])
+        return f"ComposedDice({self.dices[0]}, [{dices_explain}])"
 
 
-class OneExtraSideDice(BaseDice):
+class OneExtraSideDice(BiDice):
     def __init__(self, dice: BaseDice) -> None:
         self.max_side = dice.max_side + 1
-        self.decision_dice = ModDice(SequentialDice(4), 2)
-        self.dice = dice
+        super().__init__(ModDice(SequentialDice(4), 2), dice)
         self._rounds = 0
 
     @property
@@ -100,12 +93,12 @@ class OneExtraSideDice(BaseDice):
         if self._rounds >= int(self.max_side):
             self._rounds = 0
 
-    def roll(self) -> int:
-        decision = self.decision_dice.roll()
+    def apply_logic(self, roll_a: int, roll_b: int) -> int:
+        decision = roll_a
         if decision == 1:
             result = (1 - self._rounds) % int(self.max_side)
         else:
-            dice_result = self.dice.roll()
+            dice_result = roll_b
             result = (dice_result + 1 - self._rounds) % int(self.max_side)
         self.rounds += 1
         if result == 0:
@@ -113,4 +106,4 @@ class OneExtraSideDice(BaseDice):
         return result
 
     def __str__(self) -> str:
-        return f"OneExtraSideDice({self.decision_dice}, {self.dice})"
+        return f"OneExtraSideDice({self.dice_a}, {self.dice_b})"

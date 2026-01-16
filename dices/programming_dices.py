@@ -1,7 +1,7 @@
-from dices.dice import BaseDice
+from dices.dice import BaseDice, DiceOfDices
 
 
-class RoutingDice(BaseDice):
+class RoutingDice(DiceOfDices):
     def __init__(self, decision_dice: BaseDice, dices: list[BaseDice]) -> None:
         if not dices:
             raise ValueError("At least one dice must be provided")
@@ -9,55 +9,50 @@ class RoutingDice(BaseDice):
             raise ValueError(
                 "Number of dices must match the sides of the decision dice"
             )
-        self.max_side = sum(dice.max_side for dice in dices)
-        self.decision_dice = decision_dice
-        self.dices = dices
+        super().__init__([decision_dice] + dices)
+        self.max_side = sum(dice.max_side for dice in dices[1:])
 
-    def roll(self) -> int:
-        decision = self.decision_dice.roll()
-        selected_dice = self.dices[decision - 1]
-        result = selected_dice.roll()
-        return result
+    def apply_logic(self, rolls: list[int]) -> int:
+        decision = rolls[0]
+        selected_dice_roll = rolls[decision]
+        return selected_dice_roll
 
     def __str__(self) -> str:
-        dices_explain = ", ".join(str(dice) for dice in self.dices)
-        return f"RoutingDice({self.decision_dice}, [{dices_explain}])"
+        dices_explain = ", ".join(str(dice) for dice in self.dices[1:])
+        return f"RoutingDice({self.dices[0]}, [{dices_explain}])"
 
 
-class ForLoopDice(BaseDice):
+class ForLoopDice(DiceOfDices):
     def __init__(self, base_die: BaseDice, iterations_die: BaseDice) -> None:
-        self.base_die = base_die
-        self.iterations_die = iterations_die
+        super().__init__([iterations_die] + [base_die] * int(iterations_die.max_side))
         self.max_side = base_die.max_side * iterations_die.max_side
 
-    def roll(self) -> int:
-        total = 0
-        iterations = self.iterations_die.roll()
-        for _ in range(iterations):
-            total += self.base_die.roll()
+    def apply_logic(self, rolls: list[int]) -> int:
+        iterations = rolls[0]
+        total = sum(rolls[1 : iterations + 1])
         return total
 
     def __str__(self) -> str:
-        return f"ForLoopDice({self.base_die}, {self.iterations_die})"
+        return f"ForLoopDice({self.dices[1]}, {self.dices[0]})"
 
 
-class WhileLoopDice(BaseDice):
+class WhileLoopDice(DiceOfDices):
     def __init__(
         self, base_die: BaseDice, condition_die: BaseDice, target: int
     ) -> None:
-        self.base_die = base_die
-        self.condition_die = condition_die
+        super().__init__([condition_die] * 100 + [base_die] * 100) # Arbitrary large number to allow multiple rolls
         self.target = target
-        self.max_side = float("inf")  # Theoretically unbounded, it can break some other dice logic
+        self.max_side = 100 * base_die.max_side
 
-    def roll(self) -> int:
+    def apply_logic(self, rolls: list[int]) -> int:
         total = 0
-        while True:
-            condition_roll = self.condition_die.roll()
-            if condition_roll != self.target:
+        condition_rolls = rolls[:100]
+        base_rolls = rolls[100:]
+        for cond_roll, base_roll in zip(condition_rolls, base_rolls):
+            if cond_roll != self.target:
                 break
-            total += self.base_die.roll()
+            total += base_roll
         return total
 
     def __str__(self) -> str:
-        return f"WhileLoopDice({self.base_die}, {self.condition_die}, {self.target})"
+        return f"WhileLoopDice({self.dices[100]}, {self.dices[0]}, {self.target})"

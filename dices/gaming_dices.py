@@ -1,35 +1,36 @@
-from dices.dice import BaseDice
+from dices.dice import BaseDice, DiceOfDices
 
 
-class AdvantageDices(BaseDice):
+class AdvantageDices(DiceOfDices):
     def __init__(self, dices: list[BaseDice]) -> None:
-        self.dices = dices
+        super().__init__(dices)
         self.max_side = max(dice.max_side for dice in dices)
 
-    def roll(self) -> int:
-        return max(dice.roll() for dice in self.dices)
+    def apply_logic(self, rolls: list[int]) -> int:
+        return max(rolls)
 
     def __str__(self) -> str:
         dices_str = ", ".join(str(dice) for dice in self.dices)
         return f"AdvantageDices([{dices_str}])"
 
 
-class DisadvantageDices(BaseDice):
+class DisadvantageDices(DiceOfDices):
     def __init__(self, dices: list[BaseDice]) -> None:
-        self.dices = dices
+        super().__init__(dices)
         self.max_side = min(
             dice.max_side for dice in dices
         )  # because if a dice has less sides, the min will never be higher than that
 
-    def roll(self) -> int:
-        return min(dice.roll() for dice in self.dices)
+    def apply_logic(self, rolls: list[int]) -> int:
+        return min(rolls)
 
     def __str__(self) -> str:
         dices_str = ", ".join(str(dice) for dice in self.dices)
         return f"DisadvantageDices([{dices_str}])"
 
 
-class ComboDice(BaseDice):
+class ComboDice(DiceOfDices):
+    """Warning: this dice can take a long time to roll, because it simulates 100 rolls always"""
     def __init__(
         self,
         dice: BaseDice,
@@ -42,7 +43,7 @@ class ComboDice(BaseDice):
             target = []
         if non_target is None:
             non_target = []
-        self.dice = dice
+        super().__init__([dice] * 100) # Arbitrary large number to allow multiple rolls
         self.target = target
         self.non_target = non_target
         self.max_side = dice.max_side
@@ -54,14 +55,13 @@ class ComboDice(BaseDice):
             return roll in self.non_target
         return False
 
-    def roll(self) -> int:
+    def apply_logic(self, rolls: list[int]) -> int:
         total = 0
-        while True:
-            roll = self.dice.roll()
+        for roll in rolls:
             total += roll
             if self._stop(roll):
                 break
         return total
-    
+
     def __str__(self) -> str:
-        return f"ComboDice({self.dice}, {self.target}, {self.non_target})"
+        return f"ComboDice({self.dices[0]}, {self.target}, {self.non_target})"

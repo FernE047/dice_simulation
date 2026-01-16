@@ -1,217 +1,188 @@
+from math import exp, factorial, floor, isqrt, log
+from sympy import prime  # type: ignore
 from typing import cast
-from dices.dice import BaseDice
+from dices.dice import AlterDice, BaseDice, FunctionDice
 
 """This module contains dice that have their behavior modified by mathematical operations."""
 
 
-class ModDice(BaseDice):
+class ModDice(AlterDice):
     def __init__(self, base_die: BaseDice, modulo: int = 0) -> None:
-        self.max_side = modulo
-        self.base_die = base_die
-        self.modulo = modulo
+        super().__init__(base_die, [modulo])
+        self.max_side = modulo - 1
 
-    def roll(self) -> int:
-        return self.base_die.roll() % self.modulo + 1
+    def apply_logic(self, roll: int) -> int:
+        return roll % self.opperand[0] + 1
 
     def __str__(self) -> str:
-        return f"ModDice({self.base_die}, {self.modulo})"
+        return f"ModDice({self.die}, {self.opperand})"
 
 
-class PrimeDice(BaseDice):
+class PrimeDice(FunctionDice):
     def __init__(self, base_die: BaseDice) -> None:
-        self.base_die = base_die
+        super().__init__(base_die)
+        self.max_side = cast(int, prime(base_die.max_side))
 
-    def roll(self) -> int:
-        from sympy import prime  # type: ignore
-
-        n = self.base_die.roll()
-        return cast(int, prime(n))
+    def apply_logic(self, roll: int) -> int:
+        return cast(int, prime(roll))
 
     def __str__(self) -> str:
-        return f"PrimeDice({self.base_die})"
+        return f"PrimeDice({self.die})"
 
 
-class OffsetDice(BaseDice):
+class OffsetDice(AlterDice):
     def __init__(self, base_die: BaseDice, offset: int) -> None:
-        self.base_die = base_die
-        self.offset = offset
+        super().__init__(base_die, [offset])
         self.max_side = base_die.max_side + offset
 
-    def roll(self) -> int:
-        return self.base_die.roll() + self.offset
+    def apply_logic(self, roll: int) -> int:
+        return roll + self.opperand[0]
 
     def __str__(self) -> str:
-        return f"OffsetDice({self.base_die}, {self.offset})"
+        return f"OffsetDice({self.die}, {self.opperand[0]})"
 
 
-class FloorDice(BaseDice):
+class FloorDice(AlterDice):
     def __init__(self, base_die: BaseDice, floor: int) -> None:
-        self.base_die = base_die
-        self.floor = floor
+        super().__init__(base_die, [floor])
         self.max_side = base_die.max_side
 
-    def roll(self) -> int:
-        result = self.base_die.roll()
-        return max(result, self.floor)
+    def apply_logic(self, roll: int) -> int:
+        return max(roll, self.opperand[0])
 
     def __str__(self) -> str:
-        return f"FloorDice({self.base_die}, {self.floor})"
+        return f"FloorDice({self.die}, {self.opperand[0]})"
 
 
-class CeilDice(BaseDice):
+class CeilDice(AlterDice):
     def __init__(self, base_die: BaseDice, ceil: int) -> None:
-        self.base_die = base_die
-        self.ceil = ceil
+        super().__init__(base_die, [ceil])
         self.max_side = base_die.max_side
 
-    def roll(self) -> int:
-        result = self.base_die.roll()
-        return min(result, self.ceil)
+    def apply_logic(self, roll: int) -> int:
+        return min(roll, self.opperand[0])
 
     def __str__(self) -> str:
-        return f"CeilDice({self.base_die}, {self.ceil})"
+        return f"CeilDice({self.die}, {self.opperand[0]})"
 
 
-class ClampDice(BaseDice):
+class ClampDice(AlterDice):
     def __init__(self, base_die: BaseDice, floor: int, ceil: int) -> None:
-        self.base_die = base_die
-        self.floor = floor
-        self.ceil = ceil
+        super().__init__(base_die, [floor, ceil])
         self.max_side = base_die.max_side
 
-    def roll(self) -> int:
-        result = self.base_die.roll()
-        return max(self.floor, min(result, self.ceil))
+    def apply_logic(self, roll: int) -> int:
+        return max(self.opperand[0], min(roll, self.opperand[1]))
 
     def __str__(self) -> str:
-        return f"ClampDice({self.base_die}, {self.floor}, {self.ceil})"
+        return f"ClampDice({self.die}, {self.opperand[0]}, {self.opperand[1]})"
 
 
-class FactorDice(BaseDice):
+class FactorDice(AlterDice):
     def __init__(self, base_die: BaseDice, factor: int) -> None:
-        self.base_die = base_die
-        self.factor = factor
+        super().__init__(base_die, [factor])
         self.max_side = base_die.max_side * factor
 
-    def roll(self) -> int:
-        return self.base_die.roll() * self.factor
+    def apply_logic(self, roll: int) -> int:
+        return roll * self.opperand[0]
 
     def __str__(self) -> str:
-        return f"FactorDice({self.base_die}, {self.factor})"
+        return f"FactorDice({self.die}, {self.opperand[0]})"
 
 
-class FactorialDice(BaseDice):
+class FactorialDice(FunctionDice):
     def __init__(self, base_die: BaseDice) -> None:
-        self.base_die = base_die
-        self.max_side = base_die.max_side
+        super().__init__(base_die)
+        self.max_side = factorial(int(base_die.max_side))
 
-    def roll(self) -> int:
-        from math import factorial
-
-        n = self.base_die.roll()
-        return factorial(n)
+    def apply_logic(self, roll: int) -> int:
+        return factorial(roll)
 
     def __str__(self) -> str:
-        return f"FactorialDice({self.base_die})"
+        return f"FactorialDice({self.die})"
 
 
-class PowerDice(BaseDice):
+class PowerDice(AlterDice):
     def __init__(self, base_die: BaseDice, power: int) -> None:
-        self.base_die = base_die
-        self.power = power
+        super().__init__(base_die, [power])
         self.max_side = base_die.max_side**power
 
-    def roll(self) -> int:
-        return self.base_die.roll() ** self.power
+    def apply_logic(self, roll: int) -> int:
+        return roll ** self.opperand[0]
 
     def __str__(self) -> str:
-        return f"PowerDice({self.base_die}, {self.power})"
+        return f"PowerDice({self.die}, {self.opperand[0]})"
 
 
-class SqrtDice(BaseDice):
+class SqrtDice(FunctionDice):
     def __init__(self, base_die: BaseDice) -> None:
-        self.base_die = base_die
+        super().__init__(base_die)
         self.max_side = base_die.max_side
 
-    def roll(self) -> int:
-        from math import isqrt
-
-        n = self.base_die.roll()
-        return isqrt(n)
+    def apply_logic(self, roll: int) -> int:
+        return isqrt(roll)
 
     def __str__(self) -> str:
-        return f"SqrtDice({self.base_die})"
+        return f"SqrtDice({self.die})"
 
 
-class LogDice(BaseDice):
-    def __init__(self, base_die: BaseDice, base: float = 10) -> None:
-        self.base_die = base_die
-        self.base = base
+class LogDice(AlterDice):
+    def __init__(self, base_die: BaseDice, base: int = 10) -> None:
+        super().__init__(base_die, [base])
         self.max_side = base_die.max_side
 
-    def roll(self) -> int:
-        from math import log, floor
-
-        n = self.base_die.roll()
-        return floor(log(n, self.base))
+    def apply_logic(self, roll: int) -> int:
+        return floor(log(roll, self.opperand[0]))
 
     def __str__(self) -> str:
-        return f"LogDice({self.base_die}, {self.base})"
+        return f"LogDice({self.die}, {self.opperand[0]})"
 
 
-class ExpDice(BaseDice):
-    def __init__(self, base_die: BaseDice, exponent: float = 2) -> None:
-        self.base_die = base_die
-        self.exponent = exponent
+class ExpDice(AlterDice):
+    def __init__(self, base_die: BaseDice, exponent: int = 2) -> None:
+        super().__init__(base_die, [exponent])
         self.max_side = base_die.max_side
 
-    def roll(self) -> int:
-        from math import exp, floor
-
-        n = self.base_die.roll()
-        return floor(exp(n * self.exponent))
+    def apply_logic(self, roll: int) -> int:
+        return floor(exp(roll * self.opperand[0]))
 
     def __str__(self) -> str:
-        return f"ExpDice({self.base_die}, {self.exponent})"
+        return f"ExpDice({self.die}, {self.opperand[0]})"
 
 
-class AbsDice(BaseDice):
+class AbsDice(FunctionDice):
     def __init__(self, base_die: BaseDice) -> None:
-        self.base_die = base_die
+        super().__init__(base_die)
         self.max_side = base_die.max_side
 
-    def roll(self) -> int:
-        n = self.base_die.roll()
-        return abs(n)
+    def apply_logic(self, roll: int) -> int:
+        return abs(roll)
 
     def __str__(self) -> str:
-        return f"AbsDice({self.base_die})"
+        return f"AbsDice({self.die})"
 
 
-class NegDice(BaseDice):
+class NegDice(FunctionDice):
     def __init__(self, base_die: BaseDice) -> None:
-        self.base_die = base_die
+        super().__init__(base_die)
         self.max_side = base_die.max_side
 
-    def roll(self) -> int:
-        n = self.base_die.roll()
-        return -n
+    def apply_logic(self, roll: int) -> int:
+        return -roll
 
     def __str__(self) -> str:
-        return f"NegDice({self.base_die})"
+        return f"NegDice({self.die})"
 
 
-class DivisionDice(BaseDice):
+class DivisionDice(AlterDice):
     def __init__(self, base_die: BaseDice, divisor: int) -> None:
         if divisor == 0:
             raise ValueError("Divisor cannot be zero.")
-        self.base_die = base_die
-        self.divisor = divisor
+        super().__init__(base_die, [divisor])
         self.max_side = base_die.max_side // divisor
 
-    def roll(self) -> int:
-        n = self.base_die.roll()
-        return n // self.divisor
+    def apply_logic(self, roll: int) -> int:
+        return roll // self.opperand[0]
 
     def __str__(self) -> str:
-        return f"DivisionDice({self.base_die}, {self.divisor})"
+        return f"DivisionDice({self.die}, {self.opperand[0]})"
