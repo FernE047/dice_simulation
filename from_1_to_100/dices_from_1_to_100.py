@@ -1,16 +1,16 @@
-from dices.dice import Dice
+from dices.dice import BaseDice, SequentialDice
 from dices.math_operations_dices import ModDice
 from dices.composed_dice import DuoDice
 from dices.composed_dice import OneExtraSideDice
 
 # 1. dices we have available to use
 
-dice_4 = Dice(4)
-dice_6 = Dice(6)
-dice_8 = Dice(8)
-dice_10 = Dice(10)
-dice_12 = Dice(12)
-dice_20 = Dice(20)
+dice_4 = SequentialDice(4)
+dice_6 = SequentialDice(6)
+dice_8 = SequentialDice(8)
+dice_10 = SequentialDice(10)
+dice_12 = SequentialDice(12)
+dice_20 = SequentialDice(20)
 
 # 2. dice we mod
 
@@ -122,8 +122,8 @@ dice_59 = OneExtraSideDice(dice_58)
 
 dice_94 = DuoDice(dice_47, dice_2)
 
-all_dices: list[Dice] = [
-    Dice(0),  # placeholder for index 0
+all_dices: list[BaseDice] = [
+    SequentialDice(0),  # placeholder for index 0
     dice_1,
     dice_2,
     dice_3,

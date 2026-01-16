@@ -1,10 +1,10 @@
-from dices.dice import Dice
+from dices.dice import BaseDice
 
 
-class MeanDice(Dice):
-    def __init__(self, dice_list: list[Dice]) -> None:
+class MeanDice(BaseDice):
+    def __init__(self, dice_list: list[BaseDice]) -> None:
         self.dice_list = dice_list
-        self.sides = sum(die.sides for die in dice_list) // len(dice_list)
+        self.max_side = sum(die.max_side for die in dice_list) // len(dice_list)
 
     def roll(self) -> int:
         rolls = [die.roll() for die in self.dice_list]
@@ -15,10 +15,10 @@ class MeanDice(Dice):
         return f"MeanDice([{dice_str}])"
 
 
-class MedianDice(Dice):
-    def __init__(self, dice_list: list[Dice]) -> None:
+class MedianDice(BaseDice):
+    def __init__(self, dice_list: list[BaseDice]) -> None:
         self.dice_list = dice_list
-        self.sides = sorted(die.sides for die in dice_list)[len(dice_list) // 2]
+        self.max_side = sorted(die.max_side for die in dice_list)[len(dice_list) // 2]
 
     def roll(self) -> int:
         rolls = sorted(die.roll() for die in self.dice_list)
@@ -34,10 +34,10 @@ class MedianDice(Dice):
         return f"MedianDice([{dice_str}])"
 
 
-class ModeDice(Dice):
-    def __init__(self, dice_list: list[Dice]) -> None:
+class ModeDice(BaseDice):
+    def __init__(self, dice_list: list[BaseDice]) -> None:
         self.dice_list = dice_list
-        self.sides = max(die.sides for die in dice_list)
+        self.max_side = max(die.max_side for die in dice_list)
 
     def roll(self) -> int:
         rolls = [die.roll() for die in self.dice_list]
@@ -52,10 +52,10 @@ class ModeDice(Dice):
         return f"ModeDice([{dice_str}])"
 
 
-class VarianceDice(Dice):
-    def __init__(self, dice_list: list[Dice]) -> None:
+class VarianceDice(BaseDice):
+    def __init__(self, dice_list: list[BaseDice]) -> None:
         self.dice_list = dice_list
-        self.sides = max(die.sides for die in dice_list)
+        self.max_side = max(die.max_side for die in dice_list)
 
     def roll(self) -> int:
         rolls = [die.roll() for die in self.dice_list]
@@ -68,10 +68,10 @@ class VarianceDice(Dice):
         return f"VarianceDice([{dice_str}])"
 
 
-class StdDevDice(Dice):
-    def __init__(self, dice_list: list[Dice]) -> None:
+class StdDevDice(BaseDice):
+    def __init__(self, dice_list: list[BaseDice]) -> None:
         self.dice_list = dice_list
-        self.sides = max(die.sides for die in dice_list)
+        self.max_side = max(die.max_side for die in dice_list)
         self.variance_dice = VarianceDice(dice_list)
 
     def roll(self) -> int:
@@ -86,10 +86,10 @@ class StdDevDice(Dice):
         return f"StdDevDice([{dice_str}])"
 
 
-class RangeDice(Dice):
-    def __init__(self, dice_list: list[Dice]) -> None:
+class RangeDice(BaseDice):
+    def __init__(self, dice_list: list[BaseDice]) -> None:
         self.dice_list = dice_list
-        self.sides = max(die.sides for die in dice_list)
+        self.max_side = max(die.max_side for die in dice_list)
 
     def roll(self) -> int:
         rolls = [die.roll() for die in self.dice_list]
@@ -100,14 +100,15 @@ class RangeDice(Dice):
         return f"RangeDice([{dice_str}])"
 
 
-class WeightedMeanDice(Dice):
-    def __init__(self, dice_list: list[Dice], dice_weights: list[Dice]) -> None:
+class WeightedMeanDice(BaseDice):
+    def __init__(self, dice_list: list[BaseDice], dice_weights: list[BaseDice]) -> None:
         if len(dice_list) != len(dice_weights):
             raise ValueError("dice_list and dice_weights must have the same length")
         self.dice_list = dice_list
         self.dice_weights = dice_weights
-        self.sides = max(
-            die.sides * weight.sides for die, weight in zip(dice_list, dice_weights)
+        self.max_side = max(
+            die.max_side * weight.max_side
+            for die, weight in zip(dice_list, dice_weights)
         )
 
     def roll(self) -> int:

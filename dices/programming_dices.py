@@ -1,15 +1,15 @@
-from dices.dice import Dice
+from dices.dice import BaseDice
 
 
-class RoutingDice(Dice):
-    def __init__(self, decision_dice: Dice, dices: list[Dice]) -> None:
+class RoutingDice(BaseDice):
+    def __init__(self, decision_dice: BaseDice, dices: list[BaseDice]) -> None:
         if not dices:
             raise ValueError("At least one dice must be provided")
-        if len(dices) != decision_dice.sides:
+        if len(dices) != decision_dice.max_side:
             raise ValueError(
                 "Number of dices must match the sides of the decision dice"
             )
-        self.sides = sum(dice.sides for dice in dices)
+        self.max_side = sum(dice.max_side for dice in dices)
         self.decision_dice = decision_dice
         self.dices = dices
 
@@ -24,11 +24,11 @@ class RoutingDice(Dice):
         return f"RoutingDice({self.decision_dice}, [{dices_explain}])"
 
 
-class ForLoopDice(Dice):
-    def __init__(self, base_die: Dice, iterations_die: Dice) -> None:
+class ForLoopDice(BaseDice):
+    def __init__(self, base_die: BaseDice, iterations_die: BaseDice) -> None:
         self.base_die = base_die
         self.iterations_die = iterations_die
-        self.sides = base_die.sides * iterations_die.sides
+        self.max_side = base_die.max_side * iterations_die.max_side
 
     def roll(self) -> int:
         total = 0
@@ -41,13 +41,14 @@ class ForLoopDice(Dice):
         return f"ForLoopDice({self.base_die}, {self.iterations_die})"
 
 
-class WhileLoopDice(Dice):
-    """This one breaks everything because of infinite loops"""
-
-    def __init__(self, base_die: Dice, condition_die: Dice, target: int) -> None:
+class WhileLoopDice(BaseDice):
+    def __init__(
+        self, base_die: BaseDice, condition_die: BaseDice, target: int
+    ) -> None:
         self.base_die = base_die
         self.condition_die = condition_die
         self.target = target
+        self.max_side = float("inf")  # Theoretically unbounded, it can break some other dice logic
 
     def roll(self) -> int:
         total = 0

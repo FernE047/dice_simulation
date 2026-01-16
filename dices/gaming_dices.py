@@ -1,10 +1,10 @@
-from dices.dice import Dice
+from dices.dice import BaseDice
 
 
-class AdvantageDices(Dice):
-    def __init__(self, dices: list[Dice]) -> None:
+class AdvantageDices(BaseDice):
+    def __init__(self, dices: list[BaseDice]) -> None:
         self.dices = dices
-        self.sides = max(dice.sides for dice in dices)
+        self.max_side = max(dice.max_side for dice in dices)
 
     def roll(self) -> int:
         return max(dice.roll() for dice in self.dices)
@@ -14,11 +14,11 @@ class AdvantageDices(Dice):
         return f"AdvantageDices([{dices_str}])"
 
 
-class DisadvantageDices(Dice):
-    def __init__(self, dices: list[Dice]) -> None:
+class DisadvantageDices(BaseDice):
+    def __init__(self, dices: list[BaseDice]) -> None:
         self.dices = dices
-        self.sides = min(
-            dice.sides for dice in dices
+        self.max_side = min(
+            dice.max_side for dice in dices
         )  # because if a dice has less sides, the min will never be higher than that
 
     def roll(self) -> int:
@@ -29,10 +29,10 @@ class DisadvantageDices(Dice):
         return f"DisadvantageDices([{dices_str}])"
 
 
-class ComboDice(Dice):
+class ComboDice(BaseDice):
     def __init__(
         self,
-        dice: Dice,
+        dice: BaseDice,
         target: list[int] | None = None,
         non_target: list[int] | None = None,
     ) -> None:
@@ -45,7 +45,7 @@ class ComboDice(Dice):
         self.dice = dice
         self.target = target
         self.non_target = non_target
-        self.sides = dice.sides
+        self.max_side = dice.max_side
 
     def _stop(self, roll: int) -> bool:
         if self.target:
