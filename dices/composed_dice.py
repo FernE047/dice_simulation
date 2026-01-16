@@ -61,12 +61,9 @@ class ComposedDice(DiceOfDices):
 
     def apply_logic(self, rolls: list[int]) -> int:
         decision = rolls[0]
-        dice_result = rolls[decision + 1]
-        result = (
-            dice_result
-            + sum(int(dice.max_side) for dice in self.dices[1 : decision + 1])
-            - self._rounds
-        ) % int(self.max_side)
+        dice_result = rolls[decision]
+        total = sum(int(dice.max_side) for dice in self.dices[1 : decision + 1])
+        result = (dice_result + total - self._rounds) % int(self.max_side)
         self.rounds += 1
         if result == 0:
             return int(self.max_side)
