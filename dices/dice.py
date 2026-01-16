@@ -49,6 +49,11 @@ class BaseDice(ABC):
         total_outcomes = len(outcomes)
         return {side: count / total_outcomes for side, count in counts.items()}
 
+    def print_probabilities(self) -> None:
+        probabilities = self.get_probabilities()
+        for side in sorted(probabilities.keys()):
+            print(f"Side {side}: {probabilities[side]:.2%}")
+
 
 class Dice(BaseDice):
     """Dice with arbitrary side values."""
@@ -63,7 +68,7 @@ class Dice(BaseDice):
     def get_outcomes(self) -> OutcomesData:
         outcomes: OutcomesData = []
         for side in self.sides:
-            outcomes.append(([side], 1))
+            outcomes.append(([side], side))
         return outcomes
 
     def __str__(self) -> str:
@@ -84,7 +89,7 @@ class SequentialDice(Dice):
     def get_outcomes(self) -> OutcomesData:
         outcomes: OutcomesData = []
         for side in range(1, self.num_sides + 1):
-            outcomes.append(([side], 1))
+            outcomes.append(([side], side))
         return outcomes
 
     def __str__(self) -> str:
@@ -112,11 +117,17 @@ class DiceOfDices(BaseDice):
         for dice in self.dices:
             new_outcomes_calculator: list[tuple[list[int], list[int]]] = []
             dice_outcomes = dice.get_outcomes()  # list of (rolls, result)
-            for existing_rolls, existing_results in outcomes_calculator:
+            if not outcomes_calculator:
                 for dice_rolls, dice_result in dice_outcomes:
-                    combined_rolls = existing_rolls + dice_rolls
-                    combined_results = existing_results + [dice_result]
-                    new_outcomes_calculator.append((combined_rolls, combined_results))
+                    new_outcomes_calculator.append((dice_rolls, [dice_result]))
+            else:
+                for existing_rolls, existing_results in outcomes_calculator:
+                    for dice_rolls, dice_result in dice_outcomes:
+                        combined_rolls = existing_rolls + dice_rolls
+                        combined_results = existing_results + [dice_result]
+                        new_outcomes_calculator.append(
+                            (combined_rolls, combined_results)
+                        )
             outcomes_calculator = new_outcomes_calculator
         final_outcomes: OutcomesData = []
         for rolls, results in outcomes_calculator:
@@ -149,6 +160,7 @@ class BiDice(BaseDice):
                 outcomes.append((rolls_a + rolls_b, total_result))
         return outcomes
 
+
 class AlterDice(BaseDice):
     def __init__(self, die: BaseDice, opperand: list[int]) -> None:
         self.die = die
@@ -161,7 +173,7 @@ class AlterDice(BaseDice):
     def roll(self) -> int:
         roll = self.die.roll()
         return self.apply_logic(roll)
-    
+
     def get_outcomes(self) -> OutcomesData:
         outcomes: OutcomesData = []
         dice_outcomes = self.die.get_outcomes()
@@ -170,8 +182,9 @@ class AlterDice(BaseDice):
             outcomes.append((rolls, total_result))
         return outcomes
 
+
 class FunctionDice(BaseDice):
-    #it only have one die as input, and applies a function to its roll using apply_logic
+    # it only have one die as input, and applies a function to its roll using apply_logic
     def __init__(self, die: BaseDice) -> None:
         self.die = die
 
@@ -182,7 +195,7 @@ class FunctionDice(BaseDice):
     def roll(self) -> int:
         roll = self.die.roll()
         return self.apply_logic(roll)
-    
+
     def get_outcomes(self) -> OutcomesData:
         outcomes: OutcomesData = []
         dice_outcomes = self.die.get_outcomes()
