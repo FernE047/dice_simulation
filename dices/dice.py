@@ -1,9 +1,11 @@
 from abc import ABC, abstractmethod
 import random
+from typing import Union, cast
 
 OutcomesData = list[
     tuple[list[int], int]
 ]  # é uma lista de tuplas, cada tupla tem uma lista de inteiros (os dices rolls que levaram até o resultado) e um inteiro (o resultado final)
+OutcomesMatriz = list[Union[int, "OutcomesMatriz"]]
 
 
 class BaseDice(ABC):
@@ -40,6 +42,40 @@ class BaseDice(ABC):
     @abstractmethod
     def get_outcomes(self) -> OutcomesData:
         pass
+
+    def print_outcomes(self) -> None:
+        outcomes = self.get_outcomes()
+        for rolls, result in outcomes:
+            rolls_str = ", ".join(str(roll) for roll in rolls)
+            print(f"Rolls: [{rolls_str}] => Result: {result}")
+
+    def outcomes_matriz(self) -> OutcomesMatriz:
+        outcomes = self.get_outcomes()
+        matriz: OutcomesMatriz = []
+        unique_values: list[list[int]] = []
+        for rolls, _ in outcomes:
+            if not unique_values:
+                for roll in rolls:
+                    unique_values.append([roll])
+            else:
+                for i, roll in enumerate(rolls):
+                    if roll not in unique_values[i]:
+                        unique_values[i].append(roll)
+
+        def build_matriz(level: int, current_rolls: list[int]) -> OutcomesMatriz | int:
+            if level == len(unique_values):
+                for rolls, result in outcomes:
+                    if rolls == current_rolls:
+                        return result
+                return 0  # should not happen
+            matriz_level: OutcomesMatriz = []
+            for value in unique_values[level]:
+                next_rolls = current_rolls + [value]
+                matriz_level.append(build_matriz(level + 1, next_rolls))
+            return matriz_level
+
+        matriz = cast(OutcomesMatriz, build_matriz(0, []))
+        return matriz
 
     def get_probabilities(self) -> dict[int, float]:
         outcomes = self.get_outcomes()
