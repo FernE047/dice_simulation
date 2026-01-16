@@ -151,7 +151,7 @@ statistical_dices: list[BaseDice] = [
     RangeDice([dice_6, dice_8, dice_10]),
     WeightedMeanDice(
         [dice_6, dice_8, dice_10], [dice_20, dice_20, dice_20]
-    ),  # way too many sides, it steals all the memory
+    ),
 ]
 probs(statistical_dices)
 
