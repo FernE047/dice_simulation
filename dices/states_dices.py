@@ -165,3 +165,48 @@ class ThePastDice(AlterDice):
 
     def __str__(self) -> str:
         return f"ThePastDice({self.die}, {self.opperand[0]})"
+
+
+class WaitDice(AlterDice):
+    # test if a fixed time has passed to get used
+    def __init__(self, die: BaseDice, wait_time: int) -> None:
+        super().__init__(die, [wait_time])
+        from datetime import datetime
+
+        self.current_time = datetime.now()
+
+    def apply_logic(self, roll: int) -> int:
+        from datetime import datetime, timedelta
+
+        if datetime.now() - self.current_time >= timedelta(seconds=self.opperand[0]):
+            self.current_time = datetime.now()
+            return roll
+        else:
+            return 0
+
+    def reset(self) -> None:
+        from datetime import datetime
+
+        self.current_time = datetime.now()
+
+    def __str__(self) -> str:
+        return f"WaitDice({self.die}, {self.opperand[0]})"
+
+
+class LimitUsesDice(AlterDice):
+    def __init__(self, die: BaseDice, max_uses: int) -> None:
+        super().__init__(die, [max_uses])
+        self.uses_left = max_uses
+
+    def apply_logic(self, roll: int) -> int:
+        if self.uses_left > 0:
+            self.uses_left -= 1
+            return roll
+        else:
+            return 0
+
+    def reset(self) -> None:
+        self.uses_left = self.opperand[0]
+
+    def __str__(self) -> str:
+        return f"LimitUsesDice({self.die}, {self.opperand[0]}, {self.uses_left})"
