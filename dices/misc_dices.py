@@ -1,4 +1,12 @@
-from dices.dice import BaseDice, BiDice, Dice, DiceOfDices, FunctionDice, OutcomesData
+from dices.dice import (
+    AlterDice,
+    BaseDice,
+    BiDice,
+    Dice,
+    DiceOfDices,
+    FunctionDice,
+    OutcomesData,
+)
 import random
 
 
@@ -241,3 +249,19 @@ class TalkativeDice(FunctionDice):
             "This outcome is between you and the universe.",
         ]
         return random.choice(dialogues)
+
+
+class SleepDice(AlterDice):
+    # sleeps when rolling
+    def __init__(self, die: BaseDice, sleep_time: int) -> None:
+        super().__init__(die, [sleep_time])
+        self.sleep_time = sleep_time
+
+    def apply_logic(self, roll: int) -> int:
+        from time import sleep
+
+        sleep(self.sleep_time)
+        return roll
+
+    def __str__(self) -> str:
+        return f"SleepDice({self.die}, {self.sleep_time})"
