@@ -265,3 +265,36 @@ class SleepDice(AlterDice):
 
     def __str__(self) -> str:
         return f"SleepDice({self.die}, {self.sleep_time})"
+
+
+class SelfComplexityDice(FunctionDice):
+    """This dice adds to its roll the number of characters in its own string representation.
+    It's a dice that is aware of its own complexity.
+    Very good to use with dices that get complex as they roll."""
+
+    def __init__(self, die: BaseDice) -> None:
+        super().__init__(die)
+
+    def apply_logic(self, roll: int) -> int:
+        complexity = len(str(self.die))
+        return roll + complexity
+
+    def __str__(self) -> str:
+        return f"SelfComplexityDice({self.die})"
+
+
+class CountDicesDice(FunctionDice):
+    """This dice adds to its roll the number of dices it contains.
+    Useful for meta-gaming scenarios where the complexity of the dice setup affects outcomes."""
+
+    def __init__(self, die: BaseDice) -> None:
+        super().__init__(die)
+
+    def apply_logic(self, roll: int) -> int:
+        text = str(self.die)
+        count = text.count("Dice")
+        # every dice class name contains "Dice", some have it twice, but that's fine
+        return roll + count
+
+    def __str__(self) -> str:
+        return f"CountDicesDice({self.die})"
