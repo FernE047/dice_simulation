@@ -90,6 +90,63 @@ class BaseDice(ABC):
         for side in sorted(probabilities.keys()):
             print(f"Side {side}: {probabilities[side]:.2%}")
 
+    def compare_dice(self, other: "BaseDice") -> dict[str, float]:
+        outcomes_self = self.get_outcomes()
+        outcomes_other = other.get_outcomes()
+        wins_self = 0
+        wins_other = 0
+        ties = 0
+        for _, result_self in outcomes_self:
+            for _, result_other in outcomes_other:
+                if result_self > result_other:
+                    wins_self += 1
+                elif result_self < result_other:
+                    wins_other += 1
+                else:
+                    ties += 1
+        return {
+            "self_win": wins_self,
+            "other_win": wins_other,
+            "tie": ties,
+            "total": wins_self - wins_other + 0 * ties,
+        }
+
+    def __eq__(self, value: object) -> bool:
+        if not isinstance(value, BaseDice):
+            return NotImplemented
+        comparision = self.compare_dice(value)
+        return comparision["total"] == 0
+
+    def __lt__(self, value: object) -> bool:
+        if not isinstance(value, BaseDice):
+            return NotImplemented
+        comparision = self.compare_dice(value)
+        return comparision["total"] < 0
+
+    def __le__(self, value: object) -> bool:
+        if not isinstance(value, BaseDice):
+            return NotImplemented
+        comparision = self.compare_dice(value)
+        return comparision["total"] <= 0
+
+    def __gt__(self, value: object) -> bool:
+        if not isinstance(value, BaseDice):
+            return NotImplemented
+        comparision = self.compare_dice(value)
+        return comparision["total"] > 0
+
+    def __ge__(self, value: object) -> bool:
+        if not isinstance(value, BaseDice):
+            return NotImplemented
+        comparision = self.compare_dice(value)
+        return comparision["total"] >= 0
+    
+    def __ne__(self, value: object) -> bool:
+        if not isinstance(value, BaseDice):
+            return NotImplemented
+        comparision = self.compare_dice(value)
+        return comparision["total"] != 0
+
 
 class Dice(BaseDice):
     """Dice with arbitrary side values."""
