@@ -38,6 +38,10 @@ from dices.programming_dices import (
     OrDice,
     NotDice,
     XorDice,
+    EqualDice,
+    NotEqualDice,
+    GreaterThanDice,
+    LessThanDice,
 )
 from dices.statistical_dices import (
     MeanDice,
@@ -149,9 +153,7 @@ statistical_dices: list[BaseDice] = [
     VarianceDice([dice_6, dice_8, dice_10]),
     StdDevDice([dice_6, dice_8, dice_10]),
     RangeDice([dice_6, dice_8, dice_10]),
-    WeightedMeanDice(
-        [dice_6, dice_8, dice_10], [dice_20, dice_20, dice_20]
-    ),
+    WeightedMeanDice([dice_6, dice_8, dice_10], [dice_20, dice_20, dice_20]),
 ]
 probs(statistical_dices)
 
@@ -165,4 +167,29 @@ for a in range(5):
     dices_6.append(MultiplicationDice([dice_6] * (a + 2)))
 exploding_6 = RoutingDice(dice_6, dices_6)
 
-exploding_6.print_simulated_probs(10000000)
+exploding_6.print_simulated_probs(10000)
+
+dice_a = Dice([2, 4, 9])
+dice_b = Dice([1, 6, 8])
+dice_c = Dice([3, 5, 7])
+intransitive_dice = [
+    dice_a,
+    dice_b,
+    dice_c,
+]
+print(intransitive_dice[0] > intransitive_dice[1])
+print(intransitive_dice[1] > intransitive_dice[2])
+print(intransitive_dice[2] > intransitive_dice[0])
+print(intransitive_dice[0].compare_dice(intransitive_dice[1]))
+comparision_dices: list[BaseDice] = [
+    GreaterThanDice(intransitive_dice[0], intransitive_dice[1]),
+    GreaterThanDice(intransitive_dice[1], intransitive_dice[2]),
+    GreaterThanDice(intransitive_dice[2], intransitive_dice[0]),
+    LessThanDice(intransitive_dice[0], intransitive_dice[1]),
+    EqualDice(intransitive_dice[0], intransitive_dice[0]),
+    EqualDice(intransitive_dice[0], intransitive_dice[1]),
+    NotEqualDice(intransitive_dice[0], intransitive_dice[1]),
+    NotEqualDice(intransitive_dice[2], intransitive_dice[2]),
+]
+
+probs(comparision_dices)
