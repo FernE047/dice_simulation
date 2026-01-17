@@ -129,3 +129,14 @@ class SurpriseDice(Dice):
 
     def __str__(self) -> str:
         return f"SurpriseDice({self.sides})"
+    
+class RecursionHellDice(DiceOfDices): #joke dice
+    def __init__(self, dices: list[BaseDice]) -> None:
+        super().__init__(dices + [self])
+
+    def apply_logic(self, rolls: list[int]) -> int:
+        return sum(rolls)
+    
+    def __str__(self) -> str:
+        return f"RecursionHellDice({self.dices})"
+
