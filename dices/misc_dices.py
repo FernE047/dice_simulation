@@ -1,4 +1,4 @@
-from dices.dice import BaseDice, BiDice, DiceOfDices, FunctionDice, OutcomesData
+from dices.dice import BaseDice, BiDice, Dice, DiceOfDices, FunctionDice, OutcomesData
 
 
 class TheFutureDice(BaseDice):  # joke dice
@@ -75,6 +75,7 @@ class BothAgreeDice(BiDice):
     def __str__(self) -> str:
         return f"BothAgreeDice({self.dice_a}, {self.dice_b})"
 
+
 class AlwaysMaxDice(FunctionDice):
     def __init__(self, die: BaseDice) -> None:
         super().__init__(die)
@@ -85,7 +86,8 @@ class AlwaysMaxDice(FunctionDice):
     def __str__(self) -> str:
         return f"AlwaysMaxDice({self.die})"
 
-class RandomErrorDice(FunctionDice): # joke dice LMAO
+
+class RandomErrorDice(FunctionDice):  # joke dice LMAO
     def __init__(self, die: BaseDice, error_rate: float) -> None:
         super().__init__(die)
         if not (0.0 <= error_rate <= 1.0):
@@ -102,3 +104,28 @@ class RandomErrorDice(FunctionDice): # joke dice LMAO
 
     def __str__(self) -> str:
         return f"RandomErrorDice({self.die}, error_rate={self.error_rate})"
+
+
+class SurpriseDice(Dice):
+    def __init__(self, sides_amount: int, min_value: int, max_value: int) -> None:
+        self.sides_amount = sides_amount
+        self.min_value = min_value
+        self.max_value = max_value
+        self.change_sides()
+        super().__init__(self.sides)
+
+    def change_sides(self) -> None:
+        import random
+
+        sides = random.sample(
+            range(self.min_value, self.max_value + 1), self.sides_amount
+        )
+        self.sides = sides
+
+    def roll(self) -> int:
+        result = super().roll()
+        self.change_sides()
+        return result
+
+    def __str__(self) -> str:
+        return f"SurpriseDice({self.sides})"
