@@ -1,0 +1,133 @@
+o maior problema no dice_simulation_solution.txt é que o unfair, but fair dices que fazemos são muito previsiveis, uma vez que sabemos qual o round que o dado se econtra, tem *50%* de chance de sair um resultado e 50% de sair os outros resultados. a chance não é bem dividida.
+
+Então nesse txt eu proponho voltarmos a ideia de usarmos o composed dice, que seria um dado d2 para decidir ir ao d(n) ou d(m), assim obtendo um dado n+m, quanto mais próximos o n e m, mais as probabilidades são parecidas.
+
+Como decidir o valor do dado? considere que n < m, ao rodar o d2 e dar resultado 1 escolhemos o dn, e o dm se o resultado for 2. primeiro calculamos o resultado normal, se rodamos o dn, o resultado é esse mesmo, se escolhemos o dm o resultado é dm + n. e o adicionamos o round que jogamos os dados mod n+m se o resultado é 0 então mantemos n+m
+3 rounds de exemplo com d3 e d4
+como d3 é menor que o d4, se rodarmos 1 no d2 usaremos o d3, se rodarmos 2 usaremos d4 + 3
+round 1:
+roll d2 = 1 então iremos rodar d3
+roll d3 = 2
+adicionamos o round 1 + 2 = 3
+3 mod 3+4 = 3 
+
+round 2:
+roll d2 = 2 então iremos rodar d4 + 3
+roll d4 = 3; 3 + 3 = 6
+adicionamos o round 2 + 6 = 8
+8 mod 3+4 = 1
+
+round 3:
+roll d2 = 1 então iremos rodar d3
+roll d3 = 3
+adicionamos o round 3 + 3 = 6
+6 mod 3+4 = 6
+
+
+antes de usar essa estratégia tinhamos acesso a esses dados:
+
+d1 : roll any dice, r mod 1 + 1
+d2 : roll d4, r mod 2 + 1
+d3 : roll d6, r mod 3 + 1
+d4 : roll d4
+d5 : roll d10, r mod 5 + 1
+d6 : roll d6
+d8 : roll d8
+d9 : roll 2d3, r_1*3 + r_2
+d10 : roll d10
+d12 : roll d12
+d15 : roll 1d3 and 1d5, r_1*5 + r_2
+d16 : roll 2d4
+d18 : roll 1d3 and 1d6
+d20 : roll d20
+d24 : roll 1d2 and 1d6
+d25 : roll 2d5
+d27 : roll 1d3 and 1d9
+d30 : roll 1d5 and 1d6
+d32 : roll 1d8 and 1d4
+d36 : roll 2d6
+d40 : roll 1d5 and 1d8
+d45 : roll 1d9 and 1d5
+d48 : roll 1d4 and 1d12
+d50 : roll 1d5 and 1d10
+d54 : roll 1d3 and 1d18
+d60 : roll 1d5 and 1d12
+d64 : roll 2d8
+d72 : roll 1d6 and 1d12
+d75 : roll 1d5 and 1d15
+d80 : roll 1d5 and 1d16
+d81 : roll 1d3 and 1d27
+d90 : roll 1d5 and 1d18
+d96 : roll 1d8 and 1d12
+d100 : roll 2d10
+
+e criamos os que são mais justos, quando m-n = 1:
+
+d7: d3 + d4 (d2)
+d11: d5 + d6 (d2)
+d17: d8 + d9 (d2)
+d19: d9 + d10 (d2)
+d31: d15 + d16 (d2)
+d49: d24 + d25 (d2)
+d23: d5 + d6 + d6 + d6 (d4)
+d47: d5 + d6 + d6 + d6 + d6 + d6 + d6 + d6 (d8)
+d59: d5 + d6 + d6 + d6 + d6 + d6 + d6 + d6 + d6 + d6 (d10)
+d71: d5 + d6 + d6 + d6 + d6 + d6 + d6 + d6 + d6 + d6 + d6 + d6 (d12)
+d52: d10 + d6 + d6 + d6 + d6 + d6 + d6 + d6 (d8)
+d58: d5 + d5 + d6 + d6 + d6 + d6 + d6 + d6 + d6 + d6 (d10)
+d43: d5 + d5 + d5 + d5 + d5 + d6 + d6 + d6 (d8)
+d67: d5 + d5 + d5 + d5 + d5 + d6 + d6 + d6 + d6 + d6 + d6 + d6 (d12)
+d91: d5 + d5 + d5 + d5 + d5 + d6 + d6 + d6 + d6 + d6 + d6 + d6 + d6 + d6 + d6 + d6 (d16)
+d41: d5 + d5 + d5 + d5 + d5 + d5 + d5 + d6 (d8)
+d53: d5 + d5 + d5 + d5 + d5 + d5 + d5 + d6 + d6 + d6 (d10)
+d83: d5 + d5 + d5 + d5 + d5 + d5 + d5 + d6 + d6 + d6 + d6 + d6 + d6 + d6 + d6 (d15)
+d89: d5 + d5 + d5 + d5 + d5 + d5 + d5 + d6 + d6 + d6 + d6 + d6 + d6 + d6 + d6 + d6 (d16)
+d61: d5 + d5 + d5 + d5 + d5 + d5 + d5 + d5 + d5 + d5 + d5 + d6 (d12)
+d79: d5 + d5 + d5 + d5 + d5 + d5 + d5 + d5 + d5 + d5 + d5 + d6 + d6 + d6 + d6 (d15)
+d97: d5 + d5 + d5 + d5 + d5 + d5 + d5 + d5 + d5 + d5 + d5 + d6 + d6 + d6 + d6 + d6 + d6 + d6 (d18)
+d77: d5 + d5 + d5 + d5 + d5 + d5 + d5 + d5 + d5 + d5 + d5 + d5 + d5 + d6 + d6 (d15)
+d74: d8 + d8 + d8 + d8 + d8 + d8 + d8 + d9 + d9 (d9)
+d59: d9 + d10 + d10 + d10 + d10 + d10 (d6)
+d73: d10 + d9 + d9 + d9 + d9 + d9 + d9 + d9 (d8)
+
+d14: d7 * d2
+d21: d7 * d3
+d28: d7 * d4
+d35: d7 * d5
+d42: d7 * d6
+d56: d7 * d8
+d63: d7 * d9
+d70: d7 * d10
+d84: d7 * d12
+d22: d11 * d2
+d33: d11 * d3
+d44: d11 * d4
+d55: d11 * d5
+d66: d11 * d6
+d88: d11 * d8
+d99: d11 * d9
+d34: d17 * d2
+d51: d17 * d3
+d68: d17 * d4
+d85: d17 * d5
+d38: d19 * d2
+d57: d19 * d3
+d76: d19 * d4
+d95: d19 * d5
+d62: d31 * d2
+d93: d31 * d3
+d98: d49 * d2
+d46: d23 * d2
+d69: d23 * d3
+d92: d23 * d4
+d94: d47 * d2
+d26: d52 mod 26
+d13: d52 mod 13
+d39: d13 * d3
+d65: d13 * d5
+d78: d13 * d6
+d29: d58 mod 29
+d87: d29 * d3
+d86: d43 * d2
+d82: d41 * d2
+d37: d74 mod 37
