@@ -81,8 +81,7 @@ class MaxStateDice(FunctionDice):
         self.max_roll = float("-inf")
 
     def apply_logic(self, roll: int) -> int:
-        if roll > self.max_roll:
-            self.max_roll = roll
+        self.max_roll = max(self.max_roll, roll)
         return cast(int, self.max_roll)
 
     def reset(self) -> None:
@@ -98,8 +97,7 @@ class MinStateDice(FunctionDice):
         self.min_roll = float("inf")
 
     def apply_logic(self, roll: int) -> int:
-        if roll < self.min_roll:
-            self.min_roll = roll
+        self.min_roll = min(self.min_roll, roll)
         return cast(int, self.min_roll)
 
     def reset(self) -> None:
