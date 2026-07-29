@@ -1,7 +1,6 @@
+from dices.composed_dice import DuoDice, OneExtraSideDice
 from dices.dice import BaseDice, SequentialDice
 from dices.math_operations_dices import ModDice
-from dices.composed_dice import DuoDice
-from dices.composed_dice import OneExtraSideDice
 
 # 1. dices we have available to use
 

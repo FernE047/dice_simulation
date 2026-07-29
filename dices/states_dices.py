@@ -1,4 +1,5 @@
 from typing import cast
+
 from dices.dice import AlterDice, BaseDice, Dice, FunctionDice
 
 

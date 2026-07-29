@@ -1,3 +1,5 @@
+import random
+
 from dices.dice import (
     AlterDice,
     BaseDice,
@@ -7,7 +9,6 @@ from dices.dice import (
     FunctionDice,
     OutcomesData,
 )
-import random
 
 
 class TheFutureDice(BaseDice):  # joke dice

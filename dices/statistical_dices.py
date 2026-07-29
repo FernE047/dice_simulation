@@ -1,4 +1,5 @@
 from math import sqrt
+
 from dices.dice import BaseDice, DiceOfDices
 
 

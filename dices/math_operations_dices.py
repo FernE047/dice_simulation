@@ -1,6 +1,8 @@
 from math import exp, factorial, floor, isqrt, log
-from sympy import prime  # type: ignore
 from typing import cast
+
+from sympy import prime  # type: ignore
+
 from dices.dice import AlterDice, BaseDice, FunctionDice
 
 """This module contains dice that have their behavior modified by mathematical operations."""
