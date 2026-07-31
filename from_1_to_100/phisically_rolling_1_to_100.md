@@ -89,6 +89,32 @@ rode o d6.
 r_1 : 1 2 3 4 5 6
 r_1
 
+### d7
+
+mantenha um d8 como counter RC e um d10 como dado normal. o dado counter começa no valor 1 e cada vez que rodar o dado normal após ter calculado o valor aumente o counter em 1. se o dado normal for maior que 7 use o valor do dado counter como valor oficial a ser usado:
+
+   1 2 3 4 5 6 7
+ 1 1 1 1 1 1 1 1
+ 2 2 2 2 2 2 2 2
+ 3 3 3 3 3 3 3 3
+ 4 4 4 4 4 4 4 4
+ 5 5 5 5 5 5 5 5
+ 6 6 6 6 6 6 6 6
+ 7 7 7 7 7 7 7 7
+ 8 1 1 2 2 1 2 3
+ 9 4 5 5 4 4 3 3
+10 7 6 5 6 7 7 6
+
+ressalvas: esses tipos de dados são justos quando rodados n vezes e quando mais vezes rodados, mais justos ficam. porém eles sempre são injustos em rodadas individuais. caso a quantidade de jogadores seja a mesma que o valor máximo do dado (7 jogadores para um d7) cada jogador deve manter o seu próprio counter
+
+obs: próximas vezes que essa tática for usada só direi qual dado é usado como RC (normalmente dois d10 formando um d100) e simplificarei a tabela para mostrar apenas o que fazer em valores anormais igual a tabela abaixo
+caso tenha combinação de um ou mais dados, a tabela vem completa.
+
+   1 2 3 4 5 6 7
+ 8 1 1 2 2 1 2 3
+ 9 4 5 5 4 4 3 3
+10 7 6 5 6 7 7 6
+
 ### d8
 
 rode um d8
@@ -117,12 +143,85 @@ rode um d10
 r_1 : 1 2 3 4 5 6 7 8 9 10
 r_1
 
+### d11
+
+mantenha um d12 como counter RC. o dado a ser usado será o d12
+
+   1 2 3 4 5 6 7 8 9 10 11
+12 1 2 3 4 5 6 7 8 9 10 11
+
+
 ### d12
 
 rode um d12
 
 r_1 : 1 2 3 4 5 6 7 8 9 10 11 12
 r_1
+
+### d13
+
+use um d20 como counter e rode dois d4
+
+   1  2  3  4
+1  A  B  C  1
+2  2  3  4  5
+3  6  7  8  9
+4 10 11 12 13
+
+se o seu resultado foi A B ou C, siga a tabela abaixo de acordo com o RC e o valor rodado
+
+   A B  C
+ 1 1 7 13
+ 2 1 7 13
+ 3 1 7 13
+ 4 2 8 11
+ 5 2 8 11
+ 6 2 9 10
+ 7 3 6 12
+ 8 3 8 10
+ 9 3 9  9
+10 4 6 11
+11 4 5 12
+12 4 5 12
+13 5 6 10
+
+### d14
+
+mantenha um d8 como counter em 7. rode um d8 e um d4
+
+     1  2  3  4  5  6  7
+1 1  1  1  1  1  1  1  1
+1 2  2  2  2  2  2  2  2
+1 3  3  3  3  3  3  3  3
+1 4  4  4  4  4  4  4  4
+1 5  5  5  5  5  5  5  5
+1 6  6  6  6  6  6  6  6
+1 7  7  7  7  7  7  7  7
+1 8  1  2  3  4  5  6  7
+2 1  8  8  8  8  8  8  8
+2 2  9  9  9  9  9  9  9
+2 3 10 10 10 10 10 10 10
+2 4 11 11 11 11 11 11 11
+2 5 12 12 12 12 12 12 12
+2 6 13 13 13 13 13 13 13
+2 7 14 14 14 14 14 14 14
+2 8  8  9 10 11 12 13 14
+3 1  1  1  1  1  1  1  1
+3 2  2  2  2  2  2  2  2
+3 3  3  3  3  3  3  3  3
+3 4  4  4  4  4  4  4  4
+3 5  5  5  5  5  5  5  5
+3 6  6  6  6  6  6  6  6
+3 7  7  7  7  7  7  7  7
+3 8  1  2  3  4  5  6  7
+4 1  8  8  8  8  8  8  8
+4 2  9  9  9  9  9  9  9
+4 3 10 10 10 10 10 10 10
+4 4 11 11 11 11 11 11 11
+4 5 12 12 12 12 12 12 12
+4 6 13 13 13 13 13 13 13
+4 7 14 14 14 14 14 14 14
+4 8  8  9 10 11 12 13 14
 
 ### d15
 
@@ -384,125 +483,3 @@ r_3 = (r_1 % 5) * 10 + r_2
 ### d90 : roll 1d10 and 1d9 (2d6 + 1d10)
 ### d96 : roll 1d8 and 1d12
 ### d100 : roll 2d10
-
-## d7
-
-considere o round counter = RC
-
-rode um d4 se o r_1 é maior que 2 subtraia por 2 para obter o resultado r_2
-
-r_1 : 1 2 3 4
-r_2 : 1 2 1 2
-r_2 = r_1 - 2 * k
-
-### r_2=1
-
-se o r_2 for 1; rode um d6 para obter r_3, se r_3 é maior que 3 subtraia por 3 para obter r_4
-
-r_3 : 1 2 3 4 5 6
-r_4 : 1 2 3 1 2 3
-r_4 = r_3 - 3 * k
-
-adicione o RC e se o resultado for maior que 7 subtraia por 7
-
-r_5 :
-
-  1 2 3
-1 2 3 4
-2 3 4 5
-3 4 5 6
-4 5 6 7
-5 6 7 1
-6 7 1 2
-7 1 2 3
-
-r_5 = r_4 + RC - 7 * k
-
-### r_2=2
-
-se o r_2 for 2; rode um d4 e adicione 3 para obter r_4
-
-r_3 : 1 2 3 4
-r_4 : 4 5 6 7
-r_4 = r_3 + 3
-
-adicione o RC e se o resultado for maior que 7 subtraia por 7
-
-r_5 :
-
-  4 5 6 7
-1 5 6 7 1
-2 6 7 1 2
-3 7 1 2 3
-4 1 2 3 4
-5 2 3 4 5
-6 3 4 5 6
-7 4 5 6 7
-
-r_5 = r_4 + RC - 7 * k
-ou
-r_5 = r_3 + 3 + RC - 7 * k
-
-
-## d11
-
-rode um d4 se o r_1 é maior que 2 subtraia por 2 para obter o resultado r_2
-
-r_1 : 1 2 3 4
-r_2 : 1 2 1 2
-r_2 = r_1 - 2 * k
-
-### r_2=1
-
-se o r_2 for 1; rode um d10 para obter r_3, se r_3 é maior que 5 subtraia por 5 para obter r_4
-
-r_3 : 1 2 3 4 5 6 7 8 9 10
-r_4 : 1 2 3 4 5 1 2 3 4  5
-r_4 = r_3 - 5 * k
-
-adicione o RC e se o resultado for maior que 11 subtraia por 11
-
-r_5 :
-
-    1  2  3  4  5
-1   2  3  4  5  6
-2   3  4  5  6  7
-3   4  5  6  7  8
-4   5  6  7  8  9
-5   6  7  8  9 10
-6   7  8  9 10 11
-7   8  9 10 11  1
-8   9 10 11  1  2
-9  10 11  1  2  3
-10 11  1  2  3  4
-11  1  2  3  4  5
-r_5 = r_4 + RC - 11 * k
-
-### r_2=2
-
-se o r_2 for 2; rode um d6 e adicione 5 para obter r_4
-
-r_3 : 1 2 3 4  5  6
-r_4 : 6 7 8 9 10 11
-r_4 = r_3 + 5
-
-adicione o RC e se o resultado for maior que 11 subtraia por 11
-
-r_5 :
-
-    6  7  8  9 10 11
-1   7  8  9 10 11  1
-2   8  9 10 11  1  2
-3   9 10 11  1  2  3
-4  10 11  1  2  3  4
-5  11  1  2  3  4  5
-6   1  2  3  4  5  6
-7   2  3  4  5  6  7
-8   3  4  5  6  7  8
-9   4  5  6  7  8  9
-10  5  6  7  8  9 10
-11  6  7  8  9 10 11
-
-r_5 = r_4 + RC - 11 * k
-ou
-r_5 = r_3 + 5 + RC - 11 * k
